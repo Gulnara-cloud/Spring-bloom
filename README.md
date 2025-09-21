@@ -22,8 +22,6 @@ At the current stage Week 2, the following features are implemented:
 
 ## Getting Started
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/Gulnara-cloud/Spring-bloom.git
+https://github.com/Gulnara-cloud/Spring-bloom
 
-- H2 Database console: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
+- H2 Database console: http://localhost:8080/h2-console](http://localhost:8080/h2-console
