@@ -21,7 +21,8 @@ At the current stage Week 2, the following features are implemented:
 ---
 
 ## Getting Started
-- H2 Database console: http://localhost:8080/h2-console](http://localhost:8080/h2-console
-- Git repo: https://github.com/Gulnara-cloud/Spring-bloom
+
+- **H2 Database console:** http://localhost:8080/h2-console  
+- **Git repo:** https://github.com/Gulnara-cloud/Spring-bloom
 
 
