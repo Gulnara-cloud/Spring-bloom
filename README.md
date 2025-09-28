@@ -21,3 +21,4 @@ The project is being developed step by step, with new features added each week.
 ## Getting Started
 - **H2 Database console:** http://localhost:8080/h2-console  
 - **Git repo:** https://github.com/Gulnara-cloud/Spring-bloom
+- **Postman:** http://localhost:8080/api/auth/login
