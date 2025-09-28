@@ -2,10 +2,9 @@ package com.gulnara.internship.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "username")
-})
+@Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,18 +21,23 @@ public class User {
         this.username = username;
         this.passwordHash = passwordHash;
     }
+
     public Long getId() {
         return id;
     }
+
     public String getUsername() {
         return username;
     }
+
     public void setUsername(String username) {
         this.username = username;
     }
+
     public String getPasswordHash() {
         return passwordHash;
     }
+
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
