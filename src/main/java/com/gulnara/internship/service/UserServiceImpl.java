@@ -6,8 +6,6 @@ import com.gulnara.internship.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -21,13 +19,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(UserRegistrationDto userData) {
-        String encodedPassword = passwordEncoder.encode(userData.getPassword());
-        User user = new User(userData.getUsername(), encodedPassword);
+        if (userRepository.findByUsername(userData.getUsername()) !=null) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
+        User user = new User();
+        user.setUsername(userData.getUsername());
+        user.setPasswordHash(passwordEncoder.encode(userData.getPassword()));
+
         return userRepository.save(user);
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 }

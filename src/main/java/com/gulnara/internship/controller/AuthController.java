@@ -1,5 +1,6 @@
 package com.gulnara.internship.controller;
 
+import com.gulnara.internship.dto.UserLoginDto;
 import com.gulnara.internship.dto.UserRegistrationDto;
 import com.gulnara.internship.model.User;
 import com.gulnara.internship.service.UserService;
@@ -8,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -24,25 +24,29 @@ public class AuthController {
 
     // 📌 Registration
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody UserRegistrationDto userData) {
-        User user = userService.registerUser(userData);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    public ResponseEntity<String> registerUser(@RequestBody UserRegistrationDto userData) {
+        try {
+            userService.registerUser(userData);
+            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     // 📌 Login
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserRegistrationDto loginData) {
-        Optional<User> userOpt = userService.findByUsername(loginData.getUsername());
+    public ResponseEntity<String> login(@RequestBody UserLoginDto loginData) {
+        User user = userService.findByUsername(loginData.getUsername());
 
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            if (passwordEncoder.matches(loginData.getPassword(), user.getPasswordHash())) {
-                return ResponseEntity.ok("Login successful!");
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
-            }
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
+
+        boolean passwordMatches = passwordEncoder.matches(loginData.getPassword(), user.getPasswordHash());
+        if (!passwordMatches) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
+        }
+
+        return ResponseEntity.ok("Login successful!");
     }
 }
