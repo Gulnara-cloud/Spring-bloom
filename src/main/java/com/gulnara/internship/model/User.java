@@ -1,13 +1,15 @@
 package com.gulnara.internship.model;
 import jakarta.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @org.hibernate.annotations.UuidGenerator
+    private UUID id;  // Automatically generated UUID (primary key)
 
     @Column(nullable = false, unique = true, length = 50)
     private String username;
@@ -22,8 +24,12 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getUsername() {
