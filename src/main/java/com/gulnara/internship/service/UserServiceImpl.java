@@ -18,15 +18,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerUser(UserRegistrationDto userData) {
+    public User registerUser(UserRegistrationDto userData) throws IllegalArgumentException {
+
+        // check if username exists
         if (userRepository.findByUsername(userData.getUsername()) !=null) {
             throw new IllegalArgumentException("Username already exists");
         }
 
-        User user = new User();
-        user.setUsername(userData.getUsername());
-        user.setPasswordHash(passwordEncoder.encode(userData.getPassword()));
+        String hashedPassword = passwordEncoder.encode(userData.getPassword());
 
+        User user = new User(userData.getUsername(), hashedPassword);
         return userRepository.save(user);
     }
 

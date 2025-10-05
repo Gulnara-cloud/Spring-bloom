@@ -1,23 +1,17 @@
 package com.gulnara.internship.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UserLoginDto {
     private String username;
     private String password;
 
-    // геттеры и сеттеры
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
+    public UserLoginDto(String username, String password) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
         this.password = password;
     }
+    public UserLoginDto() {}
 }
