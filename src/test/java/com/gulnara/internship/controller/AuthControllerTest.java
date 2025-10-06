@@ -38,9 +38,9 @@ class AuthControllerTest {
     //  REGISTER: success case (201 CREATED)
     @Test
     void register_returns201_andMessage_onSuccess() throws Exception {
-        UserRegistrationDto dto = new UserRegistrationDto("newuser", "plain123");
+        UserRegistrationDto dto = new UserRegistrationDto("newuser", "plain123", "newuser@example.com");
         when(userService.registerUser(any(UserRegistrationDto.class)))
-                .thenReturn(new User("newuser", "ENC_plain123"));
+                .thenReturn(new User("newuser", "ENC_plain123","john@example.com"));
 
 
         mockMvc.perform(post("/api/auth/register")
@@ -56,7 +56,7 @@ class AuthControllerTest {
         when(userService.registerUser(any(UserRegistrationDto.class)))
                 .thenThrow(new IllegalArgumentException("Username already exists"));
 
-        UserRegistrationDto dto = new UserRegistrationDto("existingUser", "12345");
+        UserRegistrationDto dto = new UserRegistrationDto("existingUser", "12345","existingUser@example.com");
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -68,7 +68,7 @@ class AuthControllerTest {
     //  LOGIN: success case (200 OK)
     @Test
     void login_returns200_onValidCredentials() throws Exception {
-        User u = new User("john", "ENC_1234");
+        User u = new User("john", "ENC_1234","john@example.com");
         when(userService.findByUsername("john")).thenReturn(u);
         when(passwordEncoder.matches("1234", "ENC_1234")).thenReturn(true);
 
@@ -84,7 +84,7 @@ class AuthControllerTest {
     //  LOGIN: invalid password (401 UNAUTHORIZED)
     @Test
     void login_returns401_onInvalidPassword() throws Exception {
-        User u = new User("john", "ENC_1234");
+        User u = new User("john", "ENC_1234","john@example.com");
         when(userService.findByUsername("john")).thenReturn(u);
         when(passwordEncoder.matches("wrongpass", "ENC_1234")).thenReturn(false);
 

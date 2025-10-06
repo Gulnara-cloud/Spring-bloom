@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
 
-    //@Mock создаёт поддельные версии зависимостей.
+    //@Mock создаёт поддельные версии зависимостей
     @Mock
     private UserRepository userRepository;
 
@@ -59,10 +59,10 @@ public class UserServiceImplTest {
     @Test
     void registerUser_throwsException_whenUsernameAlreadyExists() {
         // Arrange
-        User existingUser = new User("john", "ENC_123");
+        User existingUser = new User("john", "ENC_123","john@example.com");
         when(userRepository.findByUsername("john")).thenReturn(existingUser);
 
-        UserRegistrationDto dto = new UserRegistrationDto("john", "plain123");
+        UserRegistrationDto dto = new UserRegistrationDto("john", "plain123","john@example.com");
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(

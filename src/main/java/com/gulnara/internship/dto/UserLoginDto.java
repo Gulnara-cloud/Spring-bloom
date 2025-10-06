@@ -9,9 +9,12 @@ public class UserLoginDto {
     private String username;
     private String password;
 
+    // Default constructor (required by Spring)
+    public UserLoginDto() {}
+
+    // Constructor for manual creation (e.g. in tests)
     public UserLoginDto(String username, String password) {
         this.username = username;
         this.password = password;
     }
-    public UserLoginDto() {}
 }

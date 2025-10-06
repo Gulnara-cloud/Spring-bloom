@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
         String hashedPassword = passwordEncoder.encode(userData.getPassword());
 
-        User user = new User(userData.getUsername(), hashedPassword);
+        User user = new User(userData.getUsername(), hashedPassword, userData.getEmail());
         return userRepository.save(user);
     }
 

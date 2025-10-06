@@ -30,12 +30,13 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
+		<!-- Spring Web (required for MVC + views) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!-- Thymeleaf Template Engine (can be removed if frontend is not required) -->
+		<!-- Thymeleaf Template Engine (Spring Boot manages the version)-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -61,7 +62,7 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- ✅ Testing dependencies (JUnit 5 + Mockito) -->
+		<!--  Testing dependencies (JUnit 5 + Mockito) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
