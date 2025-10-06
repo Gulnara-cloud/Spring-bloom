@@ -39,7 +39,7 @@ class AuthControllerTest {
     @Test
     void register_returns201_andMessage_onSuccess() throws Exception {
         UserRegistrationDto dto = new UserRegistrationDto("newuser", "plain123");
-        doNothing().when(userService).registerUser(any(UserRegistrationDto.class));
+        doNothing().when(userService).registerUser(any(UserRegistrationDto.class)) ;
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -76,7 +76,7 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Login successful"));
+                .andExpect(content().string("Login successful!"));
     }
 
     //  LOGIN: invalid password (401 UNAUTHORIZED)
