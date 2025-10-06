@@ -39,7 +39,9 @@ class AuthControllerTest {
     @Test
     void register_returns201_andMessage_onSuccess() throws Exception {
         UserRegistrationDto dto = new UserRegistrationDto("newuser", "plain123");
-        doNothing().when(userService).registerUser(any(UserRegistrationDto.class)) ;
+        when(userService.registerUser(any(UserRegistrationDto.class)))
+                .thenReturn(new User("newuser", "ENC_plain123"));
+
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -51,8 +53,8 @@ class AuthControllerTest {
     //  REGISTER: username already exists (400 BAD_REQUEST)
     @Test
     void register_returns400_whenUsernameExists() throws Exception {
-        doThrow(new IllegalArgumentException("Username already exists"))
-                .when(userService).registerUser(any(UserRegistrationDto.class));
+        when(userService.registerUser(any(UserRegistrationDto.class)))
+                .thenThrow(new IllegalArgumentException("Username already exists"));
 
         UserRegistrationDto dto = new UserRegistrationDto("existingUser", "12345");
 
