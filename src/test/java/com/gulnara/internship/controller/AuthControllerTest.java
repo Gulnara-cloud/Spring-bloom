@@ -42,12 +42,12 @@ class AuthControllerTest {
         when(userService.registerUser(any(UserRegistrationDto.class)))
                 .thenReturn(new User("newuser", "ENC_plain123","john@example.com"));
 
-
+        // Send registration data as JSON in a mock POST request
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
-                .andExpect(content().string("User registered successfully"));
+                .andExpect(jsonPath("$.message").value("User registered successfully"));
     }
 
     //  REGISTER: username already exists (400 BAD_REQUEST)
@@ -62,7 +62,7 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Username already exists"));
+                .andExpect(jsonPath("$.error").value("Username already exists"));
     }
 
     //  LOGIN: success case (200 OK)
@@ -78,7 +78,7 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Login successful!"));
+                .andExpect(jsonPath("$.message").value("Login successful!"));
     }
 
     //  LOGIN: invalid password (401 UNAUTHORIZED)
@@ -94,7 +94,7 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Invalid password"));
+                .andExpect(jsonPath("$.error").value("Invalid password"));
     }
 
     //  LOGIN: user not found (401 UNAUTHORIZED)
@@ -108,16 +108,13 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Invalid username or password"));
+                .andExpect(jsonPath("$.error").value("Invalid username or password"));
     }
 }
-/* Общая идея
-Этот код - тестирует AuthController (тот, где /register и /login).
-Он проверяет, что:
-когда ты отправляешь правильный запрос (POST),
-контроллер (AuthController)
-возвращает правильный HTTP-ответ (201, 400, 401, 200) и правильное сообщение.
-Тесты делают это автоматически, без запуска сервера.
+/* Этот код - тестирует AuthController (тот, где /register и /login).
+Он проверяет, что: когда ты отправляешь правильный запрос (POST),
+контроллер (AuthController) возвращает правильный HTTP-ответ (201, 400, 401, 200)
+и правильное сообщение. Тесты делают это автоматически, без запуска сервера.
 
 Этот тест - это автоматическая проверка AuthController.
 Он имитирует 5 реальных ситуаций:

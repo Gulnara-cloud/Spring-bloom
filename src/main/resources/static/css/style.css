@@ -1,0 +1,96 @@
+/* ===== Global Reset and Font ===== */
+* {
+  box-sizing: border-box;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* ===== Page Background (ultra light beige) ===== */
+body {
+  background: linear-gradient(135deg, #fdf8ef, #f8f3e7); /* lighter creamy beige */
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===== Card (Register Box) ===== */
+.card {
+  border: none; !important;
+  border-radius: 16px; !important;
+  background-color: #e9dfc9; !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== Input Fields ===== */
+.form-control {
+  background-color: #f5f8f2; /* soft light olive */
+  border: 1px solid #c8d5b9;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 15px;
+  color: #3c4a35;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #a4b98f;
+  box-shadow: 0 0 6px rgba(164, 185, 143, 0.6);
+}
+
+/* ===== Labels ===== */
+.form-label {
+  font-weight: 600;
+  color: #3f5139;
+}
+
+/* ===== Register Button (dark beige tone) ===== */
+.btn-primary {
+  background: linear-gradient(135deg, #b59a6a, #9b8355) !important; /* dark beige shades */
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: 600;
+  padding: 10px !important;
+  color: #fff !important;
+  transition: background 0.3s ease-in-out, transform 0.2s;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #c0a874, #a28b5f) !important; /* lighter on hover */
+  transform: scale(1.03);
+}
+
+/* ===== Link Below Form ===== */
+a.text-decoration-none {
+  color: #667552; /* muted olive text */
+  font-weight: 500;
+}
+
+a.text-decoration-none:hover {
+  color: #4b5a3c;
+}
+/* Style for the Register title */
+h2.text-center {
+  font-size: 28px; !important; /* slightly larger font */
+  font-weight: 500; !important; /* medium weight for minimalistic look */
+  letter-spacing: 0.5px; !important; /* a bit more air between letters */
+  margin-bottom: 25px; !important;
+  color: #3a2e1f;  /* same warm brown tone as before */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* clean and modern font */
+}
+/* ===== Invalid field style ===== */
+.is-invalid {
+  border: 2px solid #c45b3e !important; /* warm red tone */
+  background-color: #fff4f0; /* soft light background */
+}
+.text-danger {
+  color: #b23b3b;
+  font-size: 0.9em;
+  margin-top: 5px;
+}

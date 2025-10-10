@@ -107,8 +107,7 @@ public class UserServiceImplTest {
     }
 }
 
-/* Общая идея
-UserServiceImpl содержит два метода:
+/* UserServiceImpl содержит два метода:
 1.registerUser() - регистрирует нового пользователя.
 2.findByUsername() - ищет пользователя по имени.
 
@@ -117,3 +116,4 @@ UserServiceImpl содержит два метода:
 -при поиске имя находится,
 -ошибки обрабатываются корректно.
  */
+

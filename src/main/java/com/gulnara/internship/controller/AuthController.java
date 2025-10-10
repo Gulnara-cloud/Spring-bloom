@@ -4,13 +4,16 @@ import com.gulnara.internship.dto.UserLoginDto;
 import com.gulnara.internship.dto.UserRegistrationDto;
 import com.gulnara.internship.model.User;
 import com.gulnara.internship.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
-@RestController
+@Controller
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -24,13 +27,23 @@ public class AuthController {
 
     // 📌 Registration
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@ModelAttribute UserRegistrationDto userData) {
-        try {
-            userService.registerUser(userData);
-            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    public String registerUser(
+            @Valid @ModelAttribute("user") UserRegistrationDto userData,
+            BindingResult result,
+            RedirectAttributes redirectAttributes) {
+
+        //  Step 1: Check if there are validation errors
+        if (result.hasErrors()) {
+            // Re-display the form with validation messages
+            return "register";
         }
+
+        //  Step 2: Proceed with registration (no try-catch, handled globally)
+        userService.registerUser(userData);
+
+        //  Step 3: Add success message for redirect
+        redirectAttributes.addFlashAttribute("successMessage", "User registered successfully!");
+        return "redirect:/register";
     }
 
     // 📌 Login
@@ -45,7 +58,6 @@ public class AuthController {
         if (!passwordMatches) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
         }
-
         return ResponseEntity.ok("Login successful!");
     }
 }

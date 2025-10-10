@@ -36,3 +36,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 }
+/* UserServiceImpl содержит два метода:
+1.registerUser() - регистрирует нового пользователя.
+2.findByUsername() - ищет пользователя по имени.
+
+Тест проверяет, что оба метода работают правильно:
+-при регистрации пароль шифруется,
+-при поиске имя находится,
+-ошибки обрабатываются корректно.
+ */
