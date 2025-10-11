@@ -78,7 +78,7 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Login successful!"));
+                .andExpect(jsonPath("$.message").value("Login successful"));
     }
 
     //  LOGIN: invalid password (401 UNAUTHORIZED)
