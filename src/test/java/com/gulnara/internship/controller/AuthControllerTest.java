@@ -3,6 +3,7 @@ package com.gulnara.internship.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gulnara.internship.dto.UserLoginDto;
 import com.gulnara.internship.dto.UserRegistrationDto;
+import com.gulnara.internship.exception.GlobalExceptionHandler;
 import com.gulnara.internship.model.User;
 import com.gulnara.internship.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,8 +21,10 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AuthController.class)
-@AutoConfigureMockMvc(addFilters = false) // disables Spring Security filters for test
+@WebMvcTest(controllers = AuthController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(GlobalExceptionHandler.class)
+
 class AuthControllerTest {
 
     @Autowired
@@ -35,14 +39,13 @@ class AuthControllerTest {
     @MockBean
     private PasswordEncoder passwordEncoder;
 
-    //  REGISTER: success case (201 CREATED)
+    //  REGISTER: success (201)
     @Test
     void register_returns201_andMessage_onSuccess() throws Exception {
         UserRegistrationDto dto = new UserRegistrationDto("newuser", "plain123", "newuser@example.com");
         when(userService.registerUser(any(UserRegistrationDto.class)))
                 .thenReturn(new User("newuser", "ENC_plain123","newuser@example.com"));
 
-        // Send registration data as JSON in a mock POST request
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
@@ -50,13 +53,13 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.message").value("User registered successfully"));
     }
 
-    //  REGISTER: username already exists (400 BAD_REQUEST)
+    //  REGISTER: username already exists (400)
     @Test
     void register_returns400_whenUsernameExists() throws Exception {
         when(userService.registerUser(any(UserRegistrationDto.class)))
                 .thenThrow(new IllegalArgumentException("Username already exists"));
 
-        UserRegistrationDto dto = new UserRegistrationDto("existingUser", "12345","existingUser@example.com");
+        UserRegistrationDto dto = new UserRegistrationDto("existingUser", "123456","existingUser@example.com");
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -65,7 +68,7 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.error").value("Username already exists"));
     }
 
-    //  LOGIN: success case (200 OK)
+    //  LOGIN: success (200)
     @Test
     void login_returns200_onValidCredentials() throws Exception {
         User u = new User("john", "ENC_1234","john@example.com");
@@ -81,7 +84,7 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.message").value("Login successful"));
     }
 
-    //  LOGIN: invalid password (401 UNAUTHORIZED)
+    //  LOGIN: invalid password (401)
     @Test
     void login_returns401_onInvalidPassword() throws Exception {
         User u = new User("john", "ENC_1234","john@example.com");
@@ -97,7 +100,7 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.error").value("Invalid password"));
     }
 
-    //  LOGIN: user not found (401 UNAUTHORIZED)
+    //  LOGIN: user not found (401)
     @Test
     void login_returns401_onUnknownUser() throws Exception {
         when(userService.findByUsername("unknown")).thenReturn(null);
@@ -111,18 +114,4 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.error").value("Invalid username or password"));
     }
 }
-/* Этот код - тестирует AuthController (тот, где /register и /login).
-Он проверяет, что: когда ты отправляешь правильный запрос (POST),
-контроллер (AuthController) возвращает правильный HTTP-ответ (201, 400, 401, 200)
-и правильное сообщение. Тесты делают это автоматически, без запуска сервера.
 
-Этот тест - это автоматическая проверка AuthController.
-Он имитирует 5 реальных ситуаций:
-
-      Сценарий	                                    Ожидаемый ответ	                            HTTP статус
-Регистрация успешна	                            "User registered successfully"	              201 (Created)
-Имя уже существует                          	"Username already exists"	                  400 (Bad Request)
-Логин успешный	                                "Login successful"	                          200 (OK)
-Неверный пароль	                                "Invalid password"	                          401 (Unauthorized)
-Пользователь не найден	                        "Invalid username or password"	              401 (Unauthorized)
- */
