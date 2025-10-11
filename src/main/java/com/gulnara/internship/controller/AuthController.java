@@ -28,7 +28,7 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // 📌 Registration (Thymeleaf form)
+    // 📌 Registration (for Thymeleaf form)
     @PostMapping("/register")
     public String registerUser(
             @Valid @ModelAttribute("user") UserRegistrationDto userData,
@@ -48,8 +48,18 @@ public class AuthController {
         return "redirect:/register";
     }
 
+    // 📌 Registration (for JSON requests — used in tests)
+    @PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> registerUserApi(@Valid @RequestBody UserRegistrationDto userData) {
+        userService.registerUser(userData);
 
-    // 📌 Login (JSON for API tests)
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User registered successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201 CREATED
+    }
+
+    // 📌 Login (JSON API for tests & Postman)
     @PostMapping("/login")
     @ResponseBody
     public ResponseEntity<Map<String, String>> login(@RequestBody UserLoginDto loginData) {
