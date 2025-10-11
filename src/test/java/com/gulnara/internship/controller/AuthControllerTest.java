@@ -40,7 +40,7 @@ class AuthControllerTest {
     void register_returns201_andMessage_onSuccess() throws Exception {
         UserRegistrationDto dto = new UserRegistrationDto("newuser", "plain123", "newuser@example.com");
         when(userService.registerUser(any(UserRegistrationDto.class)))
-                .thenReturn(new User("newuser", "ENC_plain123","john@example.com"));
+                .thenReturn(new User("newuser", "ENC_plain123","newuser@example.com"));
 
         // Send registration data as JSON in a mock POST request
         mockMvc.perform(post("/api/auth/register")
