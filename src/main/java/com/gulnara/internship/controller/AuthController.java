@@ -44,7 +44,7 @@ public class AuthController {
         userService.registerUser(userData);
 
         // Step 3: Add a success flash message for the frontend
-        redirectAttributes.addFlashAttribute("successMessage", "User registered successfully");
+        redirectAttributes.addFlashAttribute("message", "User registered successfully");
         return "redirect:/register";
     }
 
