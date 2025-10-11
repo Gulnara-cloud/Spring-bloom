@@ -13,6 +13,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -25,39 +28,49 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // 📌 Registration
+    // 📌 Registration (Thymeleaf form)
     @PostMapping("/register")
     public String registerUser(
             @Valid @ModelAttribute("user") UserRegistrationDto userData,
             BindingResult result,
             RedirectAttributes redirectAttributes) {
 
-        //  Step 1: Check if there are validation errors
+        // Step 1: Check for validation errors
         if (result.hasErrors()) {
-            // Re-display the form with validation messages
-            return "register";
+            return "register"; // return to the same page if validation fails
         }
 
-        //  Step 2: Proceed with registration (no try-catch, handled globally)
+        // Step 2: Register the user (global exception handling applied)
         userService.registerUser(userData);
 
-        //  Step 3: Add success message for redirect
+        // Step 3: Add a success flash message for the frontend
         redirectAttributes.addFlashAttribute("successMessage", "User registered successfully!");
         return "redirect:/register";
     }
 
-    // 📌 Login
+
+    // 📌 Login (JSON for API tests)
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginDto loginData) {
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> login(@RequestBody UserLoginDto loginData) {
+        Map<String, String> response = new HashMap<>();
+
+        // Step 1: Find user by username
         User user = userService.findByUsername(loginData.getUsername());
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            response.put("error", "Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
+        // Step 2: Validate the password
         boolean passwordMatches = passwordEncoder.matches(loginData.getPassword(), user.getPasswordHash());
         if (!passwordMatches) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
+            response.put("error", "Invalid password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
-        return ResponseEntity.ok("Login successful!");
+
+        // Step 3: Successful login
+        response.put("message", "Login successful");
+        return ResponseEntity.ok(response);
     }
 }
