@@ -39,7 +39,6 @@ public class AuthController {
         if (result.hasErrors()) {
             return "register"; // return to the same page if validation fails
         }
-
         // Step 2: Register the user (global exception handling applied)
         userService.registerUser(userData);
 

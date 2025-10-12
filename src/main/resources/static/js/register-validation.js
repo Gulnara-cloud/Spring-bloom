@@ -1,4 +1,4 @@
-// ===== Basic Client-Side Validation for Register Form =====
+//       Basic Client-Side Validation for Register Form
 
 // Wait until the page is fully loaded
 document.addEventListener("DOMContentLoaded", function () {
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Helper: show red border + message
-  function showError(input, message) {
+    function showError(input, message) {
     input.classList.add("is-invalid");
     input.placeholder = message;
   }

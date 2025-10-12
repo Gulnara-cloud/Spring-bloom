@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Global exception handler to manage all application errors in one place.
- */
+  //  GLOBAL EXCEPTION HANDLER to manage all application errors in one place
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
