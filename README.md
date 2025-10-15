@@ -1,4 +1,4 @@
-# 🌸 Spring Bloom Project
+# Spring Bloom Project
 
 This is a training project built with **Spring Boot**.  
 It demonstrates the gradual development of a full-stack application with authentication, validation, and structured backend logic.
