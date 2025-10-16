@@ -22,7 +22,8 @@ public class User {
     private String email;
 
     // Default constructor (required by JPA)
-    public User() {}
+    public User() {
+    }
 
     // Parameterized constructor (used in service/tests)
     public User(String username, String passwordHash, String email) {

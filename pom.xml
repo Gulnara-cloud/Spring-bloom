@@ -43,12 +43,6 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!-- Thymeleaf (template engine for HTML pages) -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-
 		<!-- H2 Database (in-memory DB for local development/testing) -->
 		<dependency>
 			<groupId>com.h2database</groupId>

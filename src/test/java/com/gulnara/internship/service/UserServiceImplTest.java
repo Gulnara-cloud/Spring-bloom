@@ -15,8 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-
-
 // Эта аннотация включает Mockito,
 // чтобы можно было использовать «mock»-объекты (подделки).
 @ExtendWith(MockitoExtension.class)
@@ -72,7 +70,6 @@ public class UserServiceImplTest {
                 IllegalArgumentException.class,
                 () -> userService.registerUser(dto)
         );
-
         assertEquals("Username already exists", exception.getMessage());
         verify(userRepository, never()).save(any());
     }
@@ -109,14 +106,4 @@ public class UserServiceImplTest {
         assertNull(result);
     }
 }
-
-/* UserServiceImpl содержит два метода:
-1.registerUser() - регистрирует нового пользователя.
-2.findByUsername() - ищет пользователя по имени.
-
-Тест проверяет, что оба метода работают правильно:
--при регистрации пароль шифруется,
--при поиске имя находится,
--ошибки обрабатываются корректно.
- */
 
