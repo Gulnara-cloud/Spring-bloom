@@ -1,26 +1,26 @@
-HELP.md
+# ===== Java / Spring Boot =====
 target/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+.mvn/
+*.class
+*.log
+*.jar
+*.war
+*.ear
+hs_err_pid*
+HELP.md
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
+# ===== IntelliJ IDEA =====
 .idea/
-*.iws
 *.iml
+*.iws
 *.ipr
 out/
 
-### NetBeans ###
+# ===== VS Code =====
+.vscode/
+
+# ===== NetBeans =====
 nbproject/private/
 build/
 nbbuild/
@@ -28,27 +28,36 @@ dist/
 nbdist/
 .nb-gradle/
 
-### VS Code ###
-.vscode/
+# ===== Node / React Frontend =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+.pnp/
+.pnp.js
 
-### Logs ###
-*.log
-logs/
-
-### Environment files ###
+# ===== Environment / Config =====
 .env
-*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+application.properties
+application.yml
 
-### OS files ###
+# ===== Test / Coverage =====
+coverage/
+*.lcov
+
+# ===== OS / System Files =====
 .DS_Store
 Thumbs.db
 
-### Compiled files ###
-*.class
-*.jar
-*.war
-*.ear
-
-### H2 local DB files ###
-*.h2.db
+# ===== Compiled / Cache =====
+*.db
 *.mv.db
+*.h2.db
+
+# ===== Temporary Files =====
+tmp/
