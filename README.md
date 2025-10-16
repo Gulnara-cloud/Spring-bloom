@@ -22,8 +22,3 @@ Implements user registration, login, validation, and password hashing.
 
 ---
 
-## ▶️ Run
-**Backend:**
-```bash
-./mvnw spring-boot:run
-
