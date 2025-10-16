@@ -1,39 +1,78 @@
-# Spring Bloom Project
+Spring Bloom — Full-Stack Project
 
-This is a training project built with **Spring Boot**.  
-It demonstrates the gradual development of a full-stack application with authentication, validation, and structured backend logic.
+This is a training full-stack application built with Spring Boot (backend) and React (frontend).
+It demonstrates the complete development of a modern authentication system with user registration, login, validation, password hashing, testing, and frontend integration.
 
----
+🚀 Implemented Features
 
-## 🚀 Implemented Features
+Full project architecture: controller, service, repository, model, dto, exception
 
-- **Git and .gitignore** configuration  
-- **Clean project architecture** (`controller`, `service`, `repository`, `model`, `dto`, `exception`)  
-- **H2 in-memory database** setup for testing and development  
-- **JPA + Spring Data** integration with `User` entity and `UserRepository`  
-- **User registration & login** with password hashing (`PasswordEncoder`)  
-- **GlobalExceptionHandler** for consistent JSON error responses  
-- **Validation** for DTO fields (`@NotBlank`, `@Email`, `@Size`)  
-- **MockMvc tests** for authentication endpoints (`/register`, `/login`)  
-- **Frontend integration** for register and login pages (HTML/CSS)
+Backend (Spring Boot)
 
----
+REST API for user registration and login (/api/auth/register, /api/auth/login)
 
-## 🛠️ Technologies
+Password hashing using PasswordEncoder
 
-- **Java 17**  
-- **Spring Boot 3.x**  
-- **Spring Data JPA**  
-- **Spring Security (PasswordEncoder)**  
-- **H2 Database (in-memory)**  
-- **JUnit & Mockito**  
-- **Maven**  
-- **Thymeleaf / CSS**
+Global Exception Handling (GlobalExceptionHandler) for consistent JSON error responses
 
----
+In-memory H2 database setup for testing
 
-## 🏁 Getting Started
+Unit tests and integration tests using JUnit and MockMvc
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Gulnara-cloud/Spring-bloom.git
+CORS configuration for React integration
+
+Frontend (React)
+
+Registration and login pages built with React.js
+
+Beautiful beige UI design with centered form layout
+
+fetch API communication with Spring Boot backend
+
+React Router for navigation between Login and Register pages
+
+Validation and success/error messages display
+
+🧰 Technologies Used
+
+Backend:
+
+Java 17
+
+Spring Boot 3.x
+
+Spring Data JPA
+
+Spring Security (PasswordEncoder)
+
+H2 (in-memory database)
+
+JUnit & Mockito
+
+Maven
+
+Frontend:
+
+React 18
+
+HTML / CSS (beige styled UI)
+
+React Router DOM
+
+Fetch API
+
+⚙️ How to Run the Project
+ Backend
+# Run from the project root
+./mvnw spring-boot:run
+
+
+The backend will start at: http://localhost:8080
+
+ Frontend
+cd frontend
+npm install
+npm start
+
+
+The React app will run at: http://localhost:3000
