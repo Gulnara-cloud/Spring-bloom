@@ -11,6 +11,7 @@ import lombok.Setter;
 public class UserRegistrationDto {
 
     @NotBlank(message = "Username cannot be empty")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     private String username;
 
     @NotBlank(message = "Password cannot be empty")
@@ -18,7 +19,7 @@ public class UserRegistrationDto {
     private String password;
 
     @NotBlank(message = "Email cannot be empty")
-    @Email(message = "Please enter a valid email")
+    @Email(message = "Please enter a valid email address")
     private String email;
 
     // Default constructor(required by Spring and for testing)

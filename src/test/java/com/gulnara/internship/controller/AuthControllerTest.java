@@ -3,8 +3,10 @@ package com.gulnara.internship.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gulnara.internship.dto.UserLoginDto;
 import com.gulnara.internship.dto.UserRegistrationDto;
+import com.gulnara.internship.model.User;
 import com.gulnara.internship.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -28,12 +30,12 @@ class AuthControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    //  Test registration success
+    //   Test: Successful registration
     @Test
-    void registerUser_returns200_whenSuccessful() throws Exception {
-        when(userService.registerUser(any(UserRegistrationDto.class))).thenReturn(null);
+    void registerUser_returns200_whenValidData() throws Exception {
+        UserRegistrationDto dto = new UserRegistrationDto("gulnara", "123456", "g@example.com");
 
-        UserRegistrationDto dto = new UserRegistrationDto("newUser", "12345", "new@example.com");
+        when(userService.registerUser(any(UserRegistrationDto.class))).thenReturn(new User());
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -42,26 +44,42 @@ class AuthControllerTest {
                 .andExpect(content().string("User registered successfully"));
     }
 
-    //  Test registration fails (username exists)
+    //  Test: Email already exists
     @Test
-    void registerUser_returns400_whenUsernameExists() throws Exception {
-        when(userService.registerUser(any(UserRegistrationDto.class)))
-                .thenThrow(new IllegalArgumentException("Username already exists"));
+    void register_returns400_whenEmailExists() throws Exception {
+        Mockito.doThrow(new IllegalArgumentException("Email already exists"))
+                .when(userService).registerUser(any(UserRegistrationDto.class));
 
-        UserRegistrationDto dto = new UserRegistrationDto("existingUser", "12345", "exist@example.com");
+        UserRegistrationDto dto = new UserRegistrationDto("gulnara", "123456", "existing@example.com");
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Email already exists"));
     }
 
-    //  Test login success
+    //  Test: Username already exists
     @Test
-    void loginUser_returns200_whenSuccessful() throws Exception {
-        when(userService.loginUser(any(UserLoginDto.class))).thenReturn(true);
+    void register_returns400_whenUsernameExists() throws Exception {
+        Mockito.doThrow(new IllegalArgumentException("Username already exists"))
+                .when(userService).registerUser(any(UserRegistrationDto.class));
 
-        UserLoginDto dto = new UserLoginDto("user", "password");
+        UserRegistrationDto dto = new UserRegistrationDto("gulnara", "123456", "g@example.com");
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Username already exists"));
+    }
+
+    //  Test: Login successful
+    @Test
+    void login_returns200_whenCredentialsAreValid() throws Exception {
+        Mockito.doReturn(true).when(userService).loginUser(any(UserLoginDto.class));
+
+        UserLoginDto dto = new UserLoginDto("g@example.com", "123456");
 
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -70,17 +88,17 @@ class AuthControllerTest {
                 .andExpect(content().string("Login successful"));
     }
 
-    //  Test login failure
+    //  Test: Login failed
     @Test
-    void loginUser_returns400_whenInvalidCredentials() throws Exception {
-        when(userService.loginUser(any(UserLoginDto.class))).thenReturn(false);
+    void login_returns400_whenInvalidCredentials() throws Exception {
+        Mockito.doReturn(false).when(userService).loginUser(any(UserLoginDto.class));
 
-        UserLoginDto dto = new UserLoginDto("user", "wrongpass");
+        UserLoginDto dto = new UserLoginDto("wrong@example.com", "wrongpass");
 
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid username or password"));
+                .andExpect(content().string("Invalid email or password"));
     }
 }
