@@ -1,5 +1,6 @@
  import React, { useState } from "react";
  import "../App.css";
+ import { useNavigate } from "react-router-dom";
 
  function Register({ onSwitchToLogin }) {
    // State variables for user input
@@ -7,6 +8,7 @@
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
    const [message, setMessage] = useState("");
+   const navigate = useNavigate();
 
    // Handle registration form submission
    const handleRegister = async (e) => {
@@ -22,7 +24,8 @@
        });
 
        if (response.ok) {
-         setMessage("Registration successful!");
+         setMessage("Registration successful");
+         navigate("/home"); // redirect to HomePage
        } else {
          const errorText = await response.text();
          setMessage(errorText || "Registration failed.");

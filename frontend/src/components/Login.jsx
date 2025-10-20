@@ -1,17 +1,19 @@
  import React, { useState } from "react";
  import "../App.css";
+ import { useNavigate } from "react-router-dom";
 
  function Login({ onSwitchToRegister }) {
-   // State variables
-   const [username, setUsername] = useState("");
+   // State variables for user input
+   const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
    const [message, setMessage] = useState("");
+   const navigate = useNavigate();
 
-   // Handle login
+   // Handle login form submission
    const handleLogin = async (e) => {
      e.preventDefault();
 
-     const loginData = { username, password };
+     const loginData = { email, password };
 
      try {
        const response = await fetch("http://localhost:8080/api/auth/login", {
@@ -21,9 +23,12 @@
        });
 
        if (response.ok) {
-         setMessage("Login successful!");
+         setMessage("Login successful");
+         // Redirect to HomePage
+         navigate("/home");
        } else {
-         setMessage("Invalid username or password.");
+           const errorText = await response.text();
+         setMessage(errorText || "Invalid username or password.");
        }
      } catch (error) {
        setMessage("Error connecting to backend.");
@@ -34,18 +39,21 @@
      <div className="form-container">
        <div className="form-box">
          <h2>User Login</h2>
+
          <form onSubmit={handleLogin}>
            <input
-             type="text"
-             placeholder="Username"
-             value={username}
-             onChange={(e) => setUsername(e.target.value)}
+             type="email"
+             placeholder="Email"
+             value={email}
+             onChange={(e) => setEmail(e.target.value)}
+             required
            />
            <input
              type="password"
              placeholder="Password"
              value={password}
              onChange={(e) => setPassword(e.target.value)}
+             required
            />
            <button type="submit">Login</button>
          </form>
