@@ -61,3 +61,6 @@ Thumbs.db
 
 # ===== Temporary Files =====
 tmp/
+# hide application.properties (contains API key)
+src/main/resources/application.properties
+
