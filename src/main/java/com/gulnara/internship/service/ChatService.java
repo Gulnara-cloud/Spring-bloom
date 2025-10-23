@@ -1,11 +1,8 @@
 package com.gulnara.internship.service;
 
-import org.springframework.stereotype.Service;
+import com.gulnara.internship.dto.ChatRequestDto;
+import com.gulnara.internship.dto.ChatResponseDto;
 
-@Service
-public class ChatService {
-
-    public String getAiResponse(String userMessage) {
-        return "You said: " + userMessage;
-    }
+public interface ChatService {
+    ChatResponseDto getChatResponse(ChatRequestDto request);
 }
