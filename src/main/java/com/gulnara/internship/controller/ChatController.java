@@ -4,24 +4,26 @@ import com.gulnara.internship.dto.ChatRequestDto;
 import com.gulnara.internship.dto.ChatResponseDto;
 import com.gulnara.internship.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
+/**
+ * ChatController handles asynchronous chat requests from the frontend.
+ * It receives a message from the user and returns a reactive response from the AI API.
+ */
 @RestController
 @RequestMapping("/api/chat")
 public class ChatController {
 
-    private final ChatService chatService;
-
     @Autowired
-    public ChatController(ChatService chatService) {
-        this.chatService = chatService;
-    }
+    private ChatService chatService;
 
+    /**
+     * Asynchronous endpoint — returns a reactive Mono<ChatResponseDto>
+     */
     @PostMapping
-    public ResponseEntity<ChatResponseDto> sendMessage(@RequestBody ChatRequestDto request) {
-        // Call the service method
-        ChatResponseDto response = chatService.getChatResponse(request);
-        return ResponseEntity.ok(response);
+    public Mono<ChatResponseDto> getChatResponse(@RequestBody ChatRequestDto request) {
+        // Simply forward the request to the ChatService (reactive)
+        return chatService.getChatResponse(request);
     }
 }
