@@ -11,6 +11,6 @@ public class TestSecurityConfig {
     // Simple password encoder for tests
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder;
+        return new BCryptPasswordEncoder();
     }
 }
