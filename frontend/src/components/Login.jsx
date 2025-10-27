@@ -23,12 +23,13 @@
        });
 
        if (response.ok) {
-         setMessage("Login successful");
-         // Redirect to HomePage
-         navigate("/home");
+           const data = await response.json();
+           localStorage.setItem("token", data.token);
+           setMessage(data.message || "Login successful");
+           navigate("/home");
        } else {
-           const errorText = await response.text();
-         setMessage(errorText || "Invalid username or password.");
+           const errorData = await response.json();
+           setMessage(errorData.message || "Invalid username or password");
        }
      } catch (error) {
        setMessage("Error connecting to backend.");

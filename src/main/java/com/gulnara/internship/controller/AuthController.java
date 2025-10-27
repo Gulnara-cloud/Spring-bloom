@@ -67,7 +67,10 @@ public class AuthController {
         boolean success = userService.loginUser(dto);
 
         if (success) {
-            return ResponseEntity.ok("Login successful");
+            Map<String, String> response = new HashMap<>();
+            response.put("token", "fake-jwt-token-123");
+            response.put("message", "Login successful");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email or password") ;
         }

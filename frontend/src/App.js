@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import HomePage from "./components/HomePage";
+import Chat from "./components/Chat";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
 
           {/* Home page after successful login or registration */}
           <Route path="/home" element={<HomePage />} />
+          {/* Chat page (only for authorized users) */}
+          <Route path="/chat" element={<ProtectedRoute element={<Chat />} />} />
         </Routes>
       </div>
     </Router>
