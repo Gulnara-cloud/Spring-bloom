@@ -2,70 +2,71 @@ package com.gulnara.internship.service;
 
 import com.gulnara.internship.dto.ChatRequestDto;
 import com.gulnara.internship.dto.ChatResponseDto;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
 
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 
-/**
- * Reactive unit tests for ChatServiceImpl using WebClient (non-blocking).
- */
+@SpringBootTest
 class ChatServiceImplTest {
 
-    private WebClient webClientMock;
+    @Autowired
     private ChatServiceImpl chatService;
 
-    @BeforeEach
-    void setUp() {
-        webClientMock = mock(WebClient.class, RETURNS_DEEP_STUBS);
-        chatService = new ChatServiceImpl() {
-            @Override
-            public Mono<ChatResponseDto> getChatResponse(ChatRequestDto request) {
-
-                ChatResponseDto mockResponse = new ChatResponseDto();
-                mockResponse.setResponse("Async reply for: " + request.getMessage());
-                return Mono.just(mockResponse);
-            }
-        };
-    }
+    @MockBean
+    private RestTemplate restTemplate;
 
     @Test
-    void shouldReturnAIResponse() {
+    void testGetChatResponse_returnsExpectedMessage() {
+        // Arrange
         ChatRequestDto request = new ChatRequestDto();
         request.setMessage("Hello AI");
 
-        Mono<ChatResponseDto> responseMono = chatService.getChatResponse(request);
+        ChatResponseDto mockResponse = new ChatResponseDto();
+        mockResponse.setResponse("Hi there!");
 
-        StepVerifier.create(responseMono)
-                .expectNextMatches(response ->
-                        response.getResponse().equals("Async reply for: Hello AI"))
-                .verifyComplete();
+        // Mock external API call
+        when(restTemplate.exchange(
+                anyString(),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(ChatResponseDto.class)
+        )).thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
+
+        // Act
+        ChatResponseDto actual = chatService.getChatResponse(request);
+
+        // Assert
+        assertNotNull(actual);
+        assertEquals("Hi there!", actual.getResponse());
     }
 
     @Test
-    void shouldHandleErrorGracefully() {
-        ChatServiceImpl failingService = new ChatServiceImpl() {
-            @Override
-            public Mono<ChatResponseDto> getChatResponse(ChatRequestDto request) {
-                return Mono.error(new WebClientResponseException(
-                        500, "Internal Server Error", null, null, null));
-            }
-        };
-
+    void testGetChatResponse_handlesErrorGracefully() {
+        // Arrange
         ChatRequestDto request = new ChatRequestDto();
-        request.setMessage("trigger error");
+        request.setMessage("Error test");
 
-        StepVerifier.create(failingService.getChatResponse(request)
-                        .onErrorResume(e -> {
-                            ChatResponseDto fallback = new ChatResponseDto();
-                            fallback.setResponse("Error handled");
-                            return Mono.just(fallback);
-                        }))
-                .expectNextMatches(resp -> resp.getResponse().equals("Error handled"))
-                .verifyComplete();
+        // Mock API failure
+        when(restTemplate.exchange(
+                anyString(),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(ChatResponseDto.class)
+        )).thenThrow(new RuntimeException("API error"));
+
+        // Act
+        ChatResponseDto actual = chatService.getChatResponse(request);
+
+        // Assert
+        assertNotNull(actual);
+        assertTrue(actual.getResponse().contains("Error"));
     }
 }

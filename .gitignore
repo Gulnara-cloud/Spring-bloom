@@ -20,14 +20,6 @@ out/
 # ===== VS Code =====
 .vscode/
 
-# ===== NetBeans =====
-nbproject/private/
-build/
-nbbuild/
-dist/
-nbdist/
-.nb-gradle/
-
 # ===== Node / React Frontend =====
 node_modules/
 npm-debug.log*
@@ -43,8 +35,6 @@ package-lock.json
 .env.development.local
 .env.test.local
 .env.production.local
-application.properties
-application.yml
 
 # ===== Test / Coverage =====
 coverage/
@@ -58,9 +48,3 @@ Thumbs.db
 *.db
 *.mv.db
 *.h2.db
-
-# ===== Temporary Files =====
-tmp/
-# hide application.properties (contains API key)
-src/main/resources/application.properties
-
