@@ -3,115 +3,119 @@
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<!-- Maven model version (always 4.0.0) -->
+	<!-- Maven model version -->
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- Parent project: provides default configurations for Spring Boot -->
+	<!-- Parent project (Spring Boot defaults) -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.4</version>
-		<relativePath/> <!-- Lookup parent from repository -->
+		<relativePath/>
 	</parent>
 
-	<!-- Basic project info -->
+	<!-- Project info -->
 	<groupId>com.gulnara</groupId>
 	<artifactId>InternProject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Spring-bloom</name>
-	<description>Internship project using Java 17 and Spring Boot</description>
+	<description>Internship learning project using Java 17 and Spring Boot</description>
 
-	<!-- Java version property -->
+	<!-- Java version -->
 	<properties>
 		<java.version>17</java.version>
 	</properties>
 
-	<!-- =======================
-         Project Dependencies
-         ======================= -->
+	<!-- ==========================
+         Dependencies
+    =========================== -->
 	<dependencies>
 
-		<!-- Core Spring Boot starter (basic application context and logging) -->
+		<!-- Core Spring Boot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
-		<!-- Web starter (includes Spring MVC and embedded Tomcat server) -->
+		<!-- Web (Spring MVC + embedded Tomcat) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!-- H2 Database (in-memory DB for local development/testing) -->
+		<!-- H2 Database (for local dev/testing) -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Spring Security (for authentication, authorization, password encryption) -->
+		<!-- Spring Security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
+		<!-- Validation -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
-		<!-- Lombok (auto-generates getters/setters/constructors; optional) -->
-           <dependency>
-               <groupId>org.projectlombok</groupId>
-               <artifactId>lombok</artifactId>
-               <optional>true</optional>
-           </dependency>
-
-           <!-- Testing dependencies (JUnit 5 + Mockito) -->
+		<!-- Lombok (auto-generate getters/setters) -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
 		</dependency>
 
-		<!-- Standard Web (MVC) -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-
-		<!-- Reactor Test for StepVerifier -->
-		<dependency>
-			<groupId>io.projectreactor</groupId>
-			<artifactId>reactor-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Spring Security Test -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
+		<!-- Dotenv (load .env variables) -->
 		<dependency>
 			<groupId>me.paulschwarz</groupId>
 			<artifactId>spring-dotenv</artifactId>
 			<version>4.0.0</version>
 		</dependency>
 
+		<!-- ======================
+             Testing Dependencies
+        ====================== -->
+
+		<!-- Spring Boot test (JUnit + Mockito) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Spring Security test -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Reactor Test (StepVerifier, optional) -->
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<!-- ==========================
          Build Configuration
-         ========================== -->
+    =========================== -->
 	<build>
 		<plugins>
 
-			<!-- Spring Boot Maven Plugin
-                 Builds the executable JAR and allows `mvn spring-boot:run` -->
-			<!-- Build setup for Lombok annotation processing -->
+			<!-- Spring Boot Maven Plugin -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- Maven Compiler Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -121,11 +125,12 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>1.18.30</version>
+							<version>1.18.36</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 
