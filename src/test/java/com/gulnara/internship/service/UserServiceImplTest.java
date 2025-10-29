@@ -53,6 +53,7 @@ class UserServiceImplTest {
         assertNotNull(savedUser);
         assertEquals("gulnara", savedUser.getUsername());
         assertEquals("g@example.com", savedUser.getEmail());
+
         verify(userRepository).save(any(User.class));
     }
 

@@ -23,9 +23,9 @@
          body: JSON.stringify(userData),
        });
 
-       if (response.ok) {
-         setMessage("Registration successful");
-         navigate("/home"); // redirect to HomePage
+      if (response.ok) {
+        setMessage("Registration successful! Please log in to continue.");
+        setTimeout(() => navigate("/login"), 2000);
        } else {
          const errorText = await response.text();
          setMessage(errorText || "Registration failed.");
@@ -65,7 +65,7 @@
 
          <p style={{ marginTop: "20px" }}>
            Already have an account?{" "}
-           <button onClick={onSwitchToLogin}>Login</button>
+           <p><button onClick={() => navigate("/login")}>Login</button></p>
          </p>
        </div>
      </div>

@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 function HomePage({ Username }) {
   const navigate = useNavigate();
 
-  // Handle logout (returns to Login page)
-  const handleLogout = () => {
-    navigate("/login");
-  };
+ // Handle logout (clears token and returns to Login page)
+   const handleLogout = () => {
+       // Clear authentication token
+     localStorage.removeItem("token");
+     navigate("/login", { replace: true });
+   };
 
   return (
     <div className="card" style={{ textAlign: "center" }}>
