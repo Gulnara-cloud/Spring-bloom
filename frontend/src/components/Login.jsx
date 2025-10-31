@@ -33,21 +33,26 @@
        });
 
        if (response.ok) {
-               const data = await response.json();
-               localStorage.setItem("token", data.token);
-               setMessage(data.message || "Login successful!");
+         const data = await response.json();
 
-               //  After successful login, redirect user back to the intended page (default: /chat)
-               const backTo = location.state?.from || "/chat";
-               navigate(backTo, { replace: true });
-             } else {
-               const errorData = await response.json();
-               setMessage(errorData.message || "Invalid username or password");
-             }
-           } catch (error) {
-             setMessage("Error connecting to backend.");
+         // Save token to localStorage
+         if (data.token) {
+           localStorage.setItem("token", data.token);
+         }
+
+         // Show success message and navigate to chat
+         setMessage(data.message || "Login successful!");
+         navigate("/chat", { replace: true });
+       } else {
+           // Handle invalid credentials
+           const errorData = await response.json();
+           setMessage(errorData.message || "Invalid username or password");
+          }
+        } catch (error) {
+            // Handle connection error
+            setMessage("Error connecting to backend.");
            }
-         };
+        };
 
    return (
      <div className="form-container">

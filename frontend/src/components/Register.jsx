@@ -24,12 +24,12 @@
        });
 
       if (response.ok) {
-        setMessage("Registration successful! Please log in to continue.");
-        setTimeout(() => navigate("/login"), 2000);
-       } else {
-         const errorText = await response.text();
-         setMessage(errorText || "Registration failed.");
-       }
+          setMessage("Registration successful! Redirecting to login...");
+          navigate("/login"); // мгновенное перенаправление
+      } else {
+          const errorText = await response.text();
+          setMessage(errorText || "Registration failed.");
+      }
      } catch (error) {
        setMessage("Error connecting to backend.");
      }

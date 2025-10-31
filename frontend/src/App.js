@@ -1,9 +1,8 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Register from "./components/Register";
-import Login from "./components/Login";
-import HomePage from "./components/HomePage";
+import Register from "./components/Register.jsx";
+import Login from "./components/Login.jsx";
 import Chat from "./components/Chat.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -27,8 +26,6 @@ function App() {
           {/* Login page */}
           <Route path="/login" element={<Login />} />
 
-          {/* Home page after successful login or registration */}
-          <Route path="/home" element={<HomePage />} />
           {/* Chat page (only for authorized users) */}
           <Route
             path="/chat"
@@ -38,7 +35,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
         </Routes>
       </div>
     </Router>
