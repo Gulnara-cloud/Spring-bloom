@@ -2,43 +2,44 @@ package com.gulnara.internship.service;
 
 import com.gulnara.internship.dto.ChatRequestDto;
 import com.gulnara.internship.dto.ChatResponseDto;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+/**
+ * ChatServiceImpl handles chat logic between the controller
+ * and the external AI client (GeminiClientService).
+ */
 @Service
 public class ChatServiceImpl implements ChatService {
 
-    private final RestTemplate restTemplate;
+    private final GeminiClientService geminiClientService;
 
-    @Value("${openai.api.key:dummy-key}")
-    private String apiKey;
-
-    @Value("${openai.api.url:https://mock-ai-api.com/chat}")
-    private String apiUrl;
-
-    public ChatServiceImpl(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    // Constructor Injection (cleaner than @Autowired field)
+    public ChatServiceImpl(GeminiClientService geminiClientService) {
+        this.geminiClientService = geminiClientService;
     }
 
     @Override
     public ChatResponseDto getChatResponse(ChatRequestDto request) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(apiKey);
+            // Validate input
+            if (request.getMessage() == null || request.getMessage().trim().isEmpty()) {
+                return new ChatResponseDto("Message cannot be empty.");
+            }
 
-            HttpEntity<ChatRequestDto> entity = new HttpEntity<>(request, headers);
+            // Get AI response via Gemini client
+            String aiReply = geminiClientService.getGeminiResponse(request.getMessage());
 
-            ResponseEntity<ChatResponseDto> response = restTemplate.exchange(
-                    apiUrl, HttpMethod.POST, entity, ChatResponseDto.class);
+            // If Gemini returned null or empty, handle gracefully
+            if (aiReply == null || aiReply.trim().isEmpty()) {
+                aiReply = "No response received from AI.";
+            }
 
-            return response.getBody();
+            // Wrap response into DTO
+            return new ChatResponseDto(aiReply);
+
         } catch (Exception e) {
-            ChatResponseDto error = new ChatResponseDto();
-            error.setResponse("Error contacting AI: " + e.getMessage());
-            return error;
+            // Handle unexpected exceptions
+            return new ChatResponseDto("Error: " + e.getMessage());
         }
     }
 }

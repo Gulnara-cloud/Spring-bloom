@@ -1,6 +1,10 @@
 package com.gulnara.internship.model;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 
 @Entity
@@ -62,5 +66,9 @@ public class User {
     }
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList();
     }
 }

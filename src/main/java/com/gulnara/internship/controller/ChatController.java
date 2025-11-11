@@ -6,27 +6,35 @@ import com.gulnara.internship.service.ChatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * ChatController handles chat messages between authenticated users
+ * and the external AI service (e.g., Gemini API).
+ */
 @RestController
 @RequestMapping("/api/chat")
-@CrossOrigin(origins = "http://localhost:3000") // React frontend
 public class ChatController {
 
     private final ChatService chatService;
 
+    // Constructor Injection (recommended for immutability and testing)
     public ChatController(ChatService chatService) {
         this.chatService = chatService;
     }
 
-    // POST /api/chat/message
+    /**
+     * Endpoint: POST /api/chat/message
+     * Accepts a user's message and returns AI response.
+     */
     @PostMapping("/message")
-    public ResponseEntity<ChatResponseDto> sendMessage(@RequestBody ChatRequestDto request) {
-        ChatResponseDto response = chatService.getChatResponse(request);
-        return ResponseEntity.ok(response);
-    }
-
-    // Simple ping endpoint
-    @GetMapping("/ping")
-    public ResponseEntity<String> ping() {
-        return ResponseEntity.ok("Chat API is working fine");
+    public ResponseEntity<?> sendMessage(@RequestBody ChatRequestDto request) {
+        try {
+            ChatResponseDto response = chatService.getChatResponse(request);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            // Catch all exceptions and return a clean error message to frontend
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error processing message: " + e.getMessage());
+        }
     }
 }

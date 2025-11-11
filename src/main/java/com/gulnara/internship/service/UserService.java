@@ -17,4 +17,6 @@ public interface UserService {
     boolean checkPassword(String rawPassword, String encodedPassword);
 
     boolean loginUser(UserLoginDto dto);
+
+    User loadUserByUsername(String username);
 }

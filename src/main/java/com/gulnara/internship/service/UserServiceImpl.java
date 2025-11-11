@@ -4,6 +4,7 @@ import com.gulnara.internship.dto.UserLoginDto;
 import com.gulnara.internship.dto.UserRegistrationDto;
 import com.gulnara.internship.model.User;
 import com.gulnara.internship.repository.UserRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-      // REGISTER user
+    // REGISTER user
     @Override
     public User registerUser(UserRegistrationDto userData) {
 
@@ -67,6 +68,12 @@ public class UserServiceImpl implements UserService {
 
         User user = userOptional.get();
         return passwordEncoder.matches(dto.getPassword(), user.getPasswordHash());
+    }
+
+    @Override
+    public User loadUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     // Password check (used by controller)
