@@ -7,7 +7,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 
-@SpringBootTest(classes = {com.gulnara.internship.InternProjectApplication.class})
+@SpringBootTest(classes = {})
 @ActiveProfiles("test")
 class InternProjectApplicationTests {
 
