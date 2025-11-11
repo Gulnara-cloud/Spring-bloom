@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 
 @SpringBootTest(classes = {com.gulnara.internship.InternProjectApplication.class})
 @ActiveProfiles("test")
-
 class InternProjectApplicationTests {
 
 	@MockBean
