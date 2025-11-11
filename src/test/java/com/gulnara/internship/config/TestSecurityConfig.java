@@ -5,12 +5,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static org.mockito.Mockito.mock;
+
+import com.gulnara.internship.service.JwtService;
+
 @TestConfiguration
 public class TestSecurityConfig {
 
-    // Simple password encoder for tests
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public JwtService jwtService() {
+        return mock(JwtService.class);
     }
 }
