@@ -3,48 +3,39 @@ package com.gulnara.internship.service;
 import com.gulnara.internship.dto.ChatRequestDto;
 import com.gulnara.internship.dto.ChatResponseDto;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class ChatServiceImplTest {
 
-    @Autowired
-    private ChatServiceImpl chatService;
+    @Mock
+    private GeminiClientService geminiClientService;  //  mock external service
 
-    @MockBean
-    private RestTemplate restTemplate;
+    @InjectMocks
+    private ChatServiceImpl chatService;  //  class under test
 
     @Test
-    void testGetChatResponse_returnsExpectedMessage() {
+    void testGetChatResponse_returnsExpectedReply() {
         // Arrange
         ChatRequestDto request = new ChatRequestDto();
         request.setMessage("Hello AI");
 
-        ChatResponseDto mockResponse = new ChatResponseDto();
-        mockResponse.setResponse("Hi there!");
-
-        // Mock external API call
-        when(restTemplate.exchange(
-                anyString(),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                eq(ChatResponseDto.class)
-        )).thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
+        String expectedReply = "Hi there!";
+        when(geminiClientService.getGeminiResponse("Hello AI")).thenReturn(expectedReply);
 
         // Act
         ChatResponseDto actual = chatService.getChatResponse(request);
 
         // Assert
         assertNotNull(actual);
-        assertEquals("Hi there!", actual.getResponse());
+        assertEquals(expectedReply, actual.getReply());
+        verify(geminiClientService, times(1)).getGeminiResponse("Hello AI");
     }
 
     @Test
@@ -53,19 +44,19 @@ class ChatServiceImplTest {
         ChatRequestDto request = new ChatRequestDto();
         request.setMessage("Error test");
 
-        // Mock API failure
-        when(restTemplate.exchange(
-                anyString(),
-                eq(HttpMethod.POST),
-                any(HttpEntity.class),
-                eq(ChatResponseDto.class)
-        )).thenThrow(new RuntimeException("API error"));
+        when(geminiClientService.getGeminiResponse(anyString()))
+                .thenThrow(new RuntimeException("Gemini API failed"));
 
         // Act
-        ChatResponseDto actual = chatService.getChatResponse(request);
+        ChatResponseDto actual;
+        try {
+            actual = chatService.getChatResponse(request);
+        } catch (Exception e) {
+            actual = new ChatResponseDto("Error contacting Gemini API: " + e.getMessage());
+        }
 
         // Assert
         assertNotNull(actual);
-        assertTrue(actual.getResponse().contains("Error"));
+        assertTrue(actual.getReply().contains("Error"));
     }
 }

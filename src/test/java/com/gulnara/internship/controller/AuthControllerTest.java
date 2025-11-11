@@ -5,6 +5,8 @@ import com.gulnara.internship.config.TestSecurityConfig;
 import com.gulnara.internship.dto.UserLoginDto;
 import com.gulnara.internship.dto.UserRegistrationDto;
 import com.gulnara.internship.model.User;
+import com.gulnara.internship.service.CustomUserDetailsService;
+import com.gulnara.internship.service.JwtService;
 import com.gulnara.internship.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -16,6 +18,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -33,6 +37,12 @@ class AuthControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -84,8 +94,18 @@ class AuthControllerTest {
     //  Test: Login successful
     @Test
     void login_returns200_whenCredentialsAreValid() throws Exception {
-        Mockito.doReturn(true).when(userService).loginUser(any(UserLoginDto.class));
+        // Mocking user
+        User mockUser = new User();
+        mockUser.setEmail("g@example.com");
+        mockUser.setUsername("gulnara");
+        mockUser.setPasswordHash("123456");
 
+        // Mocking dependencies
+        Mockito.when(userService.findByEmail("g@example.com")).thenReturn(Optional.of(mockUser));
+        Mockito.when(userService.checkPassword("123456", "123456")).thenReturn(true);
+        Mockito.when(jwtService.generateToken(mockUser)).thenReturn("mocked-jwt-token"); //
+
+        // Test DTO
         UserLoginDto dto = new UserLoginDto("g@example.com", "123456");
 
         mockMvc.perform(post("/api/auth/login")
@@ -93,8 +113,8 @@ class AuthControllerTest {
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Login successful"))
-                .andExpect(jsonPath("$.token").value("fake-jwt-token-123"));
-    }
+                .andExpect(jsonPath("$.token").value("mocked-jwt-token")); // expect mocked token
+}
 
     //  Test: Login failed
     @Test

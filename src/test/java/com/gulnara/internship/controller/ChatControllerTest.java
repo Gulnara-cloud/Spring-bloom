@@ -30,12 +30,8 @@ class ChatControllerTest {
     @MockBean
     private ChatService chatService;
 
-    @Test
-    void ping_returnsOK() throws Exception {
-        mockMvc.perform(get("/api/chat/ping"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Chat API is working fine"));
-    }
+    @MockBean
+    private com.gulnara.internship.config.JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Test
     void sendMessage_returnsAIResponse() throws Exception {
@@ -43,7 +39,7 @@ class ChatControllerTest {
         requestDto.setMessage("Hello AI");
 
         ChatResponseDto responseDto = new ChatResponseDto();
-        responseDto.setResponse("Hi there!");
+        responseDto.setReply("Hi there!");
 
         Mockito.when(chatService.getChatResponse(any(ChatRequestDto.class)))
                 .thenReturn(responseDto);

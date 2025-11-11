@@ -2,14 +2,26 @@ package com.gulnara.internship;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+
+@SpringBootTest(classes = {com.gulnara.internship.InternProjectApplication.class})
 @ActiveProfiles("test")
 
 class InternProjectApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
-}
+		@MockBean
+		private com.gulnara.internship.config.JwtAuthenticationFilter jwtAuthenticationFilter;
+
+		@MockBean
+		private com.gulnara.internship.service.JwtService jwtService;
+
+		@MockBean
+		private com.gulnara.internship.service.UserService userService;
+	}
+
