@@ -25,7 +25,7 @@
 
       if (response.ok) {
           setMessage("Registration successful! Redirecting to login...");
-          navigate("/login"); // мгновенное перенаправление
+          navigate("/login");
       } else {
           const errorText = await response.text();
           setMessage(errorText || "Registration failed.");
@@ -65,7 +65,12 @@
 
          <p style={{ marginTop: "20px" }}>
            Already have an account?{" "}
-           <p><button onClick={() => navigate("/login")}>Login</button></p>
+           <button
+             onClick={() => navigate("/login")}
+             style={{ background: "none", border: "none", padding: 0, color: "#3a42ff", textDecoration: "underline", cursor: "pointer" }}
+           >
+             Login
+           </button>
          </p>
        </div>
      </div>

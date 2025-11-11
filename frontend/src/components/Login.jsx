@@ -33,26 +33,27 @@
        });
 
        if (response.ok) {
-         const data = await response.json();
+         const data = await response.json(); // await обязательно
+         console.log("Login response:", data);
 
-         // Save token to localStorage
          if (data.token) {
-           localStorage.setItem("token", data.token);
+           localStorage.setItem("token", data.token); // сохраняем JWT
+           setMessage(data.message || "Login successful");
+           navigate("/chat", { replace: true }); // переходим в чат
+         } else {
+           setMessage("No token received from server");
          }
-
-         // Show success message and navigate to chat
-         setMessage(data.message || "Login successful!");
-         navigate("/chat", { replace: true });
        } else {
-           // Handle invalid credentials
-           const errorData = await response.json();
-           setMessage(errorData.message || "Invalid username or password");
-          }
-        } catch (error) {
-            // Handle connection error
-            setMessage("Error connecting to backend.");
-           }
-        };
+         const err = await response.text();
+         console.error("Login failed:", err);
+         setMessage("Invalid email or password");
+       }
+     } catch (error) {
+       console.error("Login error:", error);
+       setMessage("Something went wrong");
+     }
+   };
+
 
    return (
      <div className="form-container">
@@ -82,8 +83,21 @@
          <p>{message}</p>
 
          <p style={{ marginTop: "20px" }}>
-           Don’t have an account?{" "}
-           <p><button onClick={() => navigate("/register")}>Register</button></p>
+           Don't have an account?{" "}
+           <button
+             onClick={() => navigate("/register")}
+             style={{
+               background: "none",
+               border: "none",
+               color: "#007bff",
+               cursor: "pointer",
+               padding: 0,
+               fontSize: "inherit",
+               textDecoration: "underline"
+             }}
+           >
+             Register
+           </button>
          </p>
        </div>
      </div>

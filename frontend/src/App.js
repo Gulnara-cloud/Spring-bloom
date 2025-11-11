@@ -21,10 +21,13 @@ function App() {
       >
         <Routes>
           {/* Registration page */}
-          <Route path="/" element={<Register />} />
+          <Route path="/register" element={<Register />} />
 
           {/* Login page */}
           <Route path="/login" element={<Login />} />
+
+          {/* Default route — redirect to login or register */}
+            <Route path="/" element={<Login />} />
 
           {/* Chat page (only for authorized users) */}
           <Route

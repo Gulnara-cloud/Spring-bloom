@@ -102,3 +102,40 @@ body, html {
   background: linear-gradient(135deg, #a98bbd, #bfa3d6);
   transform: translateY(-1px);
 }
+/* === Chat Header (top bar) === */
+.chat-header {
+  display: flex;
+  justify-content: space-between; /* название слева, кнопка справа */
+  align-items: center;
+  padding: 10px 20px;
+  width: 100%;
+  max-width: 800px;
+  background: linear-gradient(135deg, #b6d4e4, #cde4f0); /* мягкий голубовато-серый градиент */
+  color: #333;
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.chat-header h2 {
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0;
+}
+
+.logout-btn {
+  background-color: #f8fafc; /* мягкий светлый фон */
+  color: #333;
+  border: 1px solid #cdd5dc; /* лёгкая рамка в тон заголовку */
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #dce6f2;/* светло-голубой hover */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06); /* мягкая, нежная тень */
+}
+
