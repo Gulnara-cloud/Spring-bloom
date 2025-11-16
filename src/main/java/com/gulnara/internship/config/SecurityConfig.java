@@ -36,14 +36,12 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
                 // Define public and protected endpoints
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
                         .requestMatchers("/api/chat/**").authenticated()
                         .anyRequest().denyAll()
                 )
-
                 // Disable default login forms
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
