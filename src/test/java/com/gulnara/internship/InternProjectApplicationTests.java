@@ -10,15 +10,6 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class InternProjectApplicationTests {
 
-	@MockBean
-	private com.gulnara.internship.config.JwtAuthenticationFilter jwtAuthenticationFilter;
-
-	@MockBean
-	private com.gulnara.internship.service.JwtService jwtService;
-
-	@MockBean
-	private com.gulnara.internship.service.UserService userService;
-
 	@Test
 	void contextLoads() {
 	}
