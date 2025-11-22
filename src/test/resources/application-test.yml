@@ -1,13 +1,22 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/internproject
+    username: internuser
+    password: password123
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
   main:
     allow-bean-definition-overriding: true
 
-    app:
-      cors:
-        allowed-origins: "*"
-        allowed-methods: GET,POST,PUT,DELETE,OPTIONS
-        allowed-headers: "*"
-
+app:
+  cors:
+    allowed-origins: "*"
+    allowed-methods: GET, POST, PUT, DELETE, OPTIONS
+    allowed-headers: "*"
 
 jwt:
   secret: test-secret-key
