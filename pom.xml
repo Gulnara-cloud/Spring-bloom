@@ -50,6 +50,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Postgres -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.3</version>
+		</dependency>
+
 		<!-- Spring Security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
