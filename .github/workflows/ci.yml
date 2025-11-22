@@ -2,9 +2,9 @@ name: Java CI
 
 on:
   push:
-    branches: [ "main" ]        # запускается при каждом push в main
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]        # и при PR в main
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -12,6 +12,27 @@ permissions:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: internuser
+          POSTGRES_PASSWORD: password123
+          POSTGRES_DB: internproject
+        options: >-
+          --health-cmd="pg_isready -U internuser"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/internproject
+      SPRING_DATASOURCE_USERNAME: internuser
+      SPRING_DATASOURCE_PASSWORD: password123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
 
     steps:
       - name: Checkout repository
@@ -24,10 +45,17 @@ jobs:
           java-version: '17'
           cache: maven
 
-      - name: Build and run tests
-        run: mvn -B -ntp clean verify   # clean build + run unit tests
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          for i in {1..15}; do
+            nc -z localhost 5432 && echo "Postgres is up" && break
+            echo "Waiting for Postgres..."
+            sleep 3
+          done
 
-      # Optional: upload test reports
+      - name: Build and run tests
+        run: mvn -B -ntp clean verify
+
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -36,11 +64,3 @@ jobs:
           path: |
             **/target/surefire-reports/*.xml
             **/target/surefire-reports/*.txt
-
-      # Optional: upload compiled jar
-      - name: Upload built jar
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: built-jar
-          path: target/*.jar
