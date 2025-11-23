@@ -1,5 +1,6 @@
 package com.gulnara.internship.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,47 +16,49 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter) {
-        this.jwtAuthFilter = jwtAuthFilter;
-    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http
-                // Disable CSRF for APIs
+                // Disable CSRF because we are using stateless JWT authentication (no cookies)
                 .csrf(csrf -> csrf.disable())
 
-                // Allow CORS (you already configured it globally in WebConfig)
+                // Enable CORS (configured globally in WebConfig)
                 .cors(cors -> {})
 
-                // Set stateless session
+                // Use stateless session management for JWT
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // Define public and protected endpoints
+
+                // Define which endpoints are public and which require authentication
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
-                        .requestMatchers("/api/chat/**").authenticated()
-                        .anyRequest().denyAll()
+                        .requestMatchers("/api/auth/**").permitAll()   // Public: login, register
+                        .requestMatchers("/api/chat/**").authenticated() // Protected: chat endpoints
+                        .anyRequest().denyAll()   // Deny everything else for security
                 )
-                // Disable default login forms
+
+                // Disable default login form (not needed for APIs)
                 .formLogin(form -> form.disable())
+
+                // Disable basic authentication (we only use JWT)
                 .httpBasic(basic -> basic.disable())
 
-                // Allow H2 console (optional for dev)
+                // Disable frame options (safe since H2 console is removed, CI requires this)
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
 
-                // Add JWT authentication filter before Spring’s UsernamePasswordAuthenticationFilter
+                // Add our custom JWT filter before Spring's authentication filter
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // AuthenticationManager bean (needed for AuthController)
+    // Expose AuthenticationManager as a bean (required for AuthController)
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
