@@ -11,14 +11,5 @@ class InternProjectApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-	@MockBean
-	private com.gulnara.internship.config.JwtAuthenticationFilter jwtAuthenticationFilter;
-
-	@MockBean
-	private com.gulnara.internship.service.JwtService jwtService;
-
-	@MockBean
-	private com.gulnara.internship.service.UserService userService;
-
 }
 
