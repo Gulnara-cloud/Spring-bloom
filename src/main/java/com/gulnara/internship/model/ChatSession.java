@@ -36,5 +36,4 @@ public class ChatSession {
     // Cascade ensures messages are deleted if session is deleted
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> messages;
-
 }

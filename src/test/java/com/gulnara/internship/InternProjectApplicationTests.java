@@ -8,6 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 
 class InternProjectApplicationTests {
+
 	@Test
 	void contextLoads() {
 	}

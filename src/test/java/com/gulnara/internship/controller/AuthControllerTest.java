@@ -44,7 +44,7 @@ class AuthControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    //   Test: Successful registration
+    //    Successful registration
     @Test
     void registerUser_returns200_whenValidData() throws Exception {
         UserRegistrationDto dto = new UserRegistrationDto("gulnara", "123456", "g@example.com");
@@ -58,7 +58,7 @@ class AuthControllerTest {
                 .andExpect(content().string("User registered successfully"));
     }
 
-    //  Test: Email already exists
+    //   Email already exists
     @Test
     void register_returns400_whenEmailExists() throws Exception {
         Mockito.doThrow(new IllegalArgumentException("Email already exists"))
@@ -73,7 +73,7 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.error").value("Email already exists"));
     }
 
-    //  Test: Username already exists
+    //   Username already exists
     @Test
     void register_returns400_whenUsernameExists() throws Exception {
         Mockito.doThrow(new IllegalArgumentException("Username already exists"))
@@ -88,7 +88,7 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.error").value("Username already exists"));
     }
 
-    //  Test: Login successful
+    //   Login successful
     @Test
     void login_returns200_whenCredentialsAreValid() throws Exception {
         // Mocking user
@@ -113,7 +113,7 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.token").value("mocked-jwt-token")); // expect mocked token
 }
 
-    //  Test: Login failed
+    //  Login failed
     @Test
     void login_returns400_whenInvalidCredentials() throws Exception {
         Mockito.doReturn(false).when(userService).loginUser(any(UserLoginDto.class));
