@@ -1,24 +1,32 @@
 #  Spring Bloom Project
 
-Full-stack training project with **Spring Boot (backend)** and **React (frontend)**.  
-Implements user registration, login, validation, and password hashing.
+A full-stack training project built with Spring Boot (backend) and React (frontend).
+The app supports user authentication, AI-powered chat, and persistent conversation history.
 
----
+🚀 Features
 
-## ⚙️ Features
-- REST API for `/register` and `/login`
-- Password hashing with `PasswordEncoder`
-- Global exception handling
-- H2 in-memory database
-- JUnit & MockMvc tests
-- React UI for register/login (beige centered layout)
-- CORS setup for frontend–backend connection
+User registration & login (JWT authentication)
 
----
+Secure password hashing
 
-## 🛠 Tech Stack
-**Backend:** Java 17, Spring Boot 3.x, JPA, Security, H2, Maven  
-**Frontend:** React 18, React Router DOM, CSS, Fetch API  
+AI chat using Gemini API
 
----
+Persistent chat sessions and messages (PostgreSQL)
+
+CORS configuration for frontend–backend communication
+
+🛠 Tech Stack
+
+Backend: Java 17, Spring Boot 3, Spring Security, JPA, PostgreSQL, Maven
+Frontend: React 18, React Router DOM, Fetch API, CSS
+
+📌 Functionality
+
+Store user conversations in PostgreSQL
+
+Associate chats with authenticated users
+
+Retrieve previous sessions and continue messaging
+
+Clean architecture with controllers, services, repositories
 
