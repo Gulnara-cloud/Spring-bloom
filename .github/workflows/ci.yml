@@ -28,12 +28,6 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
-    env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/internproject
-      SPRING_DATASOURCE_USERNAME: internuser
-      SPRING_DATASOURCE_PASSWORD: password123
-      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
