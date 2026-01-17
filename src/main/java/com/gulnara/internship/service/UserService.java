@@ -5,6 +5,7 @@ import com.gulnara.internship.dto.UserRegistrationDto;
 import com.gulnara.internship.model.User;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserService {
 
@@ -19,4 +20,6 @@ public interface UserService {
     boolean loginUser(UserLoginDto dto);
 
     User loadUserByUsername(String username);
+
+    UUID getUserIdByUsername(String username);
 }

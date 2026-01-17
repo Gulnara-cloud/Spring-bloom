@@ -21,7 +21,7 @@ app:
 jwt:
   secret: test-secret-key
 
-gemini:
+openai:
   api:
     key: test-key
     url: https://fake.url

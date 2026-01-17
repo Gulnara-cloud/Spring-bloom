@@ -1,16 +1,20 @@
 package com.gulnara.internship.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-
 import java.util.Collection;
 import java.util.Collections;
+import java.util.*;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User {
 
+    // Getters and Setters
     @Id
     @GeneratedValue
     @org.hibernate.annotations.UuidGenerator
@@ -25,6 +29,9 @@ public class User {
     @Column(name = "Password_hash", nullable = false, length = 255)
     private String passwordHash;
 
+    @OneToMany(mappedBy = "user")
+    private List<Conversation> conversations = new ArrayList<>();
+
     // Default constructor (required by JPA)
     public User() {
     }
@@ -34,38 +41,6 @@ public class User {
         this.username = username;
         this.passwordHash = passwordHash;
         this.email = email;
-    }
-
-    // Getters and Setters
-    public UUID getId() {
-        return id;
-    }
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-
-    public String getUsername() {
-        return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {

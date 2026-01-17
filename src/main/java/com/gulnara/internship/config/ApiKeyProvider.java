@@ -10,17 +10,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApiKeyProvider {
 
-    @Value("${GEMINI_API_KEY:test-key}")
-    private String geminiApiKey;
+    @Value("${OPENAI_API_KEY:test-key}")
+    private String openaiApiKey;
 
-    @Value("${GEMINI_API_URL:https://fake.url}")
-    private String geminiApiUrl;
+    @Value("${OPENAI_API_URL:https://fake.url}")
+    private String openaiApiUrl;
 
-    public String getGeminiApiKey() {
-        return geminiApiKey;
+    public String getOpenaiApiKey() {
+        return openaiApiKey;
     }
 
-    public String getGeminiApiUrl() {
-        return geminiApiUrl;
+    public String getOpenaiApiUrl() {
+        return openaiApiUrl;
     }
 }

@@ -1,9 +1,9 @@
 # Development environment configuration
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/internproject
-    username: internuser
-    password: password123
+    url: jdbc:postgresql://localhost:5433/internproject
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
@@ -13,9 +13,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 api:
-  gemini:
-    key: ${GEMINI_API_KEY}
-    url: ${GEMINI_API_URL}
+  openai:
+    key: ${OPENAI_API_KEY}
+    url: ${OPENAI_API_URL}
 
 jwt:
   secret: ${JWT_SECRET}

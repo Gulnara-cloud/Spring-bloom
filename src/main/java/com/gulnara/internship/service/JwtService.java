@@ -16,15 +16,12 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-
     @Value("${jwt.secret}")
     private String secretKey;
-
     // Generate a JWT token for the given user
     public String generateToken(User user) {
         return generateToken(Map.of(), user);
     }
-
     // Generate a JWT token with optional extra claims
     public String generateToken(Map<String, Object> extraClaims, User user) {
         return Jwts.builder()
@@ -35,34 +32,28 @@ public class JwtService {
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
-
     // Validate if the token is valid for the given user
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
-
     // Extract username from the token (stored as subject)
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
-
     // Check if the token has expired
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
-
     // Extract expiration date from the token
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
-
     // Extract a specific claim from the token
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-
     // Parse and validate all claims from the token
     private Claims extractAllClaims(String token) {
         try {
@@ -77,13 +68,11 @@ public class JwtService {
             throw new RuntimeException("Invalid JWT token.");
         }
     }
-
     // Create the signing key (works for both Base64 and plain text secrets)
     private Key getSigningKey() {
         if (secretKey == null || secretKey.isEmpty()) {
             throw new IllegalStateException("JWT secret key is missing. Please configure 'jwt.secret' in application.yml or .env");
         }
-
         try {
             byte[] decodedKey = Decoders.BASE64.decode(secretKey);
             return Keys.hmacShaKeyFor(decodedKey);

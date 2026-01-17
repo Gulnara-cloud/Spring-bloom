@@ -1,91 +1,206 @@
 package com.gulnara.internship.service;
 
-import com.gulnara.internship.dto.ChatRequestDto;
-import com.gulnara.internship.dto.ChatResponseDto;
-import com.gulnara.internship.model.ChatMessage;
-import com.gulnara.internship.model.ChatSession;
-import com.gulnara.internship.model.SenderRole;
-import com.gulnara.internship.repository.ChatMessageRepository;
-import com.gulnara.internship.repository.ChatSessionRepository;
+import com.gulnara.internship.dto.*;
+import com.gulnara.internship.memory.MemoryService;
+import com.gulnara.internship.model.Conversation;
+import com.gulnara.internship.model.Message;
+import com.gulnara.internship.model.MessageRole;
+import com.gulnara.internship.model.User;
+import com.gulnara.internship.repository.ConversationRepository;
+import com.gulnara.internship.repository.MessageRepository;
+import com.gulnara.internship.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-/**
- * ChatServiceImpl handles chat logic between the controller
- * and the external AI client (GeminiClientService).
- */
 @Service
+@RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
 
-    private final GeminiClientService geminiClientService;
-    private final ChatSessionRepository chatSessionRepository;
-    private final ChatMessageRepository chatMessageRepository;
+    private final ConversationRepository conversationRepository;
+    private final MemoryService memoryService;
+    private final MessageRepository messageRepository;
+    private final UserRepository userRepository;
+    private final OpenAiClientService openAiClientService;
 
-    public ChatServiceImpl(GeminiClientService geminiClientService,
-                           ChatSessionRepository chatSessionRepository,
-                           ChatMessageRepository chatMessageRepository) {
-        this.geminiClientService = geminiClientService;
-        this.chatSessionRepository = chatSessionRepository;
-        this.chatMessageRepository = chatMessageRepository;
+    @Override
+    public ChatResponseDto processChat(UUID userId, ChatRequestDto request) {
+        // A) User & Conversation
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Conversation conversation;
+
+        // Check if conversation ID provided
+        if (request.getConversationId() == null) {
+            // New conversation
+            conversation = Conversation.builder()
+                    .title("New chat")
+                    .modelName(request.getModelName())
+                    .user(user)
+                    .build();
+            conversation = conversationRepository.save(conversation);
+
+        } else {
+            // Existing conversation - validate ownership
+            UUID convId = request.getConversationId();
+            conversation = conversationRepository.findByIdAndUserId(convId, userId)
+                    .orElseThrow(() -> new RuntimeException("Conversation not found or access denied"));
+        }
+        // B) Save user message
+        Message userMessage = Message.builder()
+                .conversation(conversation)
+                .role(MessageRole.USER)
+                .content(request.getMessage())
+                .build();
+        messageRepository.save(userMessage);
+        memoryService.extractAndSave(userId, request.getMessage());
+
+        // C) Get full conversation history (ordered)
+        List<Message> history = messageRepository
+                .findByConversationIdOrderByCreatedAtAsc(conversation.getId());
+
+        // Build messages for OpenAI
+        List<Map<String, String>> messages = new ArrayList<>();
+
+        // SYSTEM PROMPT
+        messages.add(Map.of(
+                "role", "system",
+                "content", "You are a helpful conversational assistant."
+        ));
+
+        // LONG-TERM MEMORY (facts)
+        String memoryPrompt = memoryService.buildMemoryPrompt(userId);
+        if (!memoryPrompt.isBlank()) {
+            messages.add(Map.of(
+                    "role", "system",
+                    "content", memoryPrompt
+            ));
+        }
+        //  FULL CONVERSATION HISTORY
+        for (Message m : history) {
+            messages.add(Map.of(
+                    "role", m.getRole() == MessageRole.USER ? "user" : "assistant",
+                    "content", m.getContent()
+            ));
+        }
+
+        //  CALL OPENAI
+        String aiReply = openAiClientService.generateResponse(messages);
+
+
+        // D) Save AI message
+        Message aiMessage = Message.builder()
+                .conversation(conversation)
+                .role(MessageRole.AI)
+                .content(aiReply)
+                .build();
+        messageRepository.save(aiMessage);
+
+        // E) Update conversation timestamp
+        conversation.setUpdatedAt(java.time.LocalDateTime.now());
+        conversationRepository.save(conversation);
+
+        // Build response DTO
+        return ChatResponseDto.builder()
+                .conversationId(conversation.getId())
+                .conversationTitle(conversation.getTitle())
+                .newConversation(request.getConversationId() == null)
+                .response(aiReply)
+                .timestamp(aiMessage.getCreatedAt())
+                .build();
     }
 
     @Override
-    public ChatResponseDto getChatResponse(ChatRequestDto request) {
-        try{
-            // Validate input
-            if (request.getMessage() == null || request.getMessage().trim().isEmpty()) {
-                return new ChatResponseDto("Message cannot be empty.");
-            }
-            // Load or create chat session
-            ChatSession session = getOrCreateSession(request.getSessionId());
-
-            // Save user's message
-            ChatMessage userMessage = ChatMessage.builder()
-                    .content(request.getMessage())
-                    .timestamp(LocalDateTime.now())
-                    .sender(SenderRole.USER)
-                    .session(session)
-                    .build();
-            chatMessageRepository.save(userMessage);
-
-            // Get AI response from Gemini
-            String aiReply = geminiClientService.getGeminiResponse(request.getMessage());
-
-            // If Gemini returned null or empty, handle gracefully
-            if (aiReply == null || aiReply.trim().isEmpty()) {
-                aiReply = "No response received from AI.";
-            }
-            // Save AI's message
-            ChatMessage aiMessage = ChatMessage.builder()
-                    .content(aiReply)
-                    .timestamp(LocalDateTime.now())
-                    .sender(SenderRole.AI)
-                    .session(session)
-                    .build();
-            chatMessageRepository.save(aiMessage);
-
-            // Return response DTO
-            return new ChatResponseDto(aiReply, session.getId());
-        } catch (Exception e) {
-            return new ChatResponseDto("Error: " + e.getMessage());
-        }
+    public List<ConversationListDto> getConversations(UUID userId) {
+        // Find user (validate existence)
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        // Get all conversations for this user ordered by updatedAt DESC
+        List<Conversation> conversations =
+                conversationRepository.findByUserIdOrderByUpdatedAtDesc(userId);
+        // Convert each conversation to DTO
+        return conversations.stream()
+                .map(conv -> ConversationListDto.builder()
+                        .id(conv.getId())
+                        .title(conv.getTitle())
+                        .modelName(conv.getModelName())
+                        .createdAt(conv.getCreatedAt())
+                        .updatedAt(conv.getUpdatedAt())
+                        .lastMessagePreview(getLastMessagePreview(conv.getId()))
+                        .messageCount(getMessageCount(conv.getId()))
+                        .build()
+                )
+                .toList();
     }
+    private String getLastMessagePreview(UUID conversationId) {
+        List<Message> messages = messageRepository
+                .findByConversationIdOrderByCreatedAtAsc(conversationId);
+        if (messages.isEmpty()) return "";
+        Message last = messages.get(messages.size() - 1);
+        String text = last.getContent();
 
-    // Helper: Load existing session or create a new one
-    private ChatSession getOrCreateSession(Long sessionId) {
-        if(sessionId != null) {
-            Optional<ChatSession> existing = chatSessionRepository.findById(sessionId);
-            if(existing.isPresent()) {
-                return existing.get();
-            }
-        }
-        // Create new session
-        ChatSession session = ChatSession.builder()
-                .title("New Chat")
-                .createdAt(LocalDateTime.now())
+        return text.length() > 50 ? text.substring(0, 50) + "..." : text;
+    }
+    private int getMessageCount(UUID conversationId) {
+        return messageRepository
+                .findByConversationIdOrderByCreatedAtAsc(conversationId)
+                .size();
+    }
+    @Override
+    public ConversationDetailDto getConversationDetail(UUID userId, UUID conversationId) {
+
+        // Validate user exists
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Validate conversation ownership
+        Conversation conversation = conversationRepository
+                .findByIdAndUserId(conversationId, userId)
+                .orElseThrow(() -> new RuntimeException("Conversation not found or access denied"));
+
+        // Load all messages sorted ASC
+        List<Message> messages = messageRepository
+                .findByConversationIdOrderByCreatedAtAsc(conversationId);
+
+        // Convert messages to DTO
+        List<MessageDto> messageDtos = messages.stream()
+                .map(msg -> MessageDto.builder()
+                        .id(msg.getId())
+                        .role(msg.getRole().name())
+                        .content(msg.getContent())
+                        .timestamp(msg.getCreatedAt())
+                        .build()
+                )
+                .toList();
+
+        // Build conversation detail DTO
+        return ConversationDetailDto.builder()
+                .id(conversation.getId())
+                .title(conversation.getTitle())
+                .modelName(conversation.getModelName())
+                .createdAt(conversation.getCreatedAt())
+                .updatedAt(conversation.getUpdatedAt())
+                .messages(messageDtos)
                 .build();
-        return chatSessionRepository.save(session);
+    }
+    @Override
+    public void deleteConversation(UUID userId, UUID conversationId) {
+
+        // Validate user exists
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Validate conversation ownership
+        Conversation conversation = conversationRepository
+                .findByIdAndUserId(conversationId, userId)
+                .orElseThrow(() -> new RuntimeException("Conversation not found or access denied"));
+
+        // Delete conversation (messages removed automatically by cascade)
+        conversationRepository.delete(conversation);
     }
 }
+

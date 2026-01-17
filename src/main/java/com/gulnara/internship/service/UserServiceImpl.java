@@ -4,11 +4,14 @@ import com.gulnara.internship.dto.UserLoginDto;
 import com.gulnara.internship.dto.UserRegistrationDto;
 import com.gulnara.internship.model.User;
 import com.gulnara.internship.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,6 +23,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
     // REGISTER user
     @Override
     public User registerUser(UserRegistrationDto userData) {
@@ -65,7 +69,6 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isEmpty()) {
             return false; //email not found
         }
-
         User user = userOptional.get();
         return passwordEncoder.matches(dto.getPassword(), user.getPasswordHash());
     }
@@ -80,5 +83,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkPassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    @Override
+    public UUID getUserIdByUsername(String username) {
+        if (username == null || username.equals("anonymousUser")) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "User is not authenticated"
+            );
+        }
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "User not found: " + username
+                ))
+                .getId();
     }
 }

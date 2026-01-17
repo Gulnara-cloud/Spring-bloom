@@ -1,6 +1,6 @@
 package com.gulnara.internship.model;
 
-public enum SenderRole {
+public enum MessageRole {
     USER,
     AI
 }

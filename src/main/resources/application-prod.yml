@@ -12,8 +12,8 @@ spring:
 
 # API Configuration
 api:
-  gemini:
-    key: {GEMINI_API_KEY}
-    url: ${GEMINI_API_URL}
+  openai:
+    key: {OPENAI_API_KEY}
+    url: ${OPENAI_API_URL}
 jwt:
   secret: ${JWT_SECRET}

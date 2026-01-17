@@ -1,10 +1,16 @@
 package com.gulnara.internship.controller;
 
+import com.gulnara.internship.config.SecurityUtil;
 import com.gulnara.internship.dto.ChatRequestDto;
 import com.gulnara.internship.dto.ChatResponseDto;
+import com.gulnara.internship.dto.ConversationDetailDto;
+import com.gulnara.internship.dto.ConversationListDto;
 import com.gulnara.internship.service.ChatService;
+import com.gulnara.internship.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * ChatController handles chat messages between authenticated users
@@ -12,29 +18,66 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/chat")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ChatController {
 
     private final ChatService chatService;
+    private final UserService userService;
 
     // Constructor Injection (recommended for immutability and testing)
-    public ChatController(ChatService chatService) {
+    public ChatController(ChatService chatService, UserService userService) {
         this.chatService = chatService;
+        this.userService = userService;
     }
 
-    /**
-     * Endpoint: POST /api/chat/message
-     * Accepts a user's message and returns AI response.
-     */
     @PostMapping("/message")
-    public ResponseEntity<?> sendMessage(@RequestBody ChatRequestDto request) {
-        try {
-            ChatResponseDto response = chatService.getChatResponse(request);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            // Catch all exceptions and return a clean error message to frontend
-            return ResponseEntity
-                    .badRequest()
-                    .body("Error processing message: " + e.getMessage());
-        }
+    public ResponseEntity<ChatResponseDto> sendMessage(@RequestBody ChatRequestDto request) {
+
+        // Get authenticated username
+        String username = SecurityUtil.getAuthenticatedUsername();
+
+        // Convert username → userId
+        UUID userId = userService.getUserIdByUsername(username);
+
+        // Call new service method (processChat)
+        ChatResponseDto response = chatService.processChat(userId, request);
+
+        // Return response with conversation context
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/conversations")
+    public ResponseEntity<List<ConversationListDto>> getConversations() {
+
+        String username = SecurityUtil.getAuthenticatedUsername();
+        System.out.println("USERNAME FROM SECURITY CONTEXT = " + username);
+
+        UUID userId = userService.getUserIdByUsername(username);
+        List<ConversationListDto> conversations = chatService.getConversations(userId);
+        return ResponseEntity.ok(conversations);
+    }
+
+    @GetMapping("/conversations/{conversationId}")
+    public ResponseEntity<ConversationDetailDto> getConversationDetail(
+            @PathVariable UUID conversationId) {
+
+        String username = SecurityUtil.getAuthenticatedUsername();
+        UUID userId = userService.getUserIdByUsername(username);
+
+        ConversationDetailDto detail =
+                chatService.getConversationDetail(userId, conversationId);
+
+        return ResponseEntity.ok(detail);
+    }
+
+    @DeleteMapping("/conversations/{conversationId}")
+    public ResponseEntity<Void> deleteConversation(@PathVariable UUID conversationId) {
+
+        String username = SecurityUtil.getAuthenticatedUsername();
+        UUID userId = userService.getUserIdByUsername(username);
+
+        chatService.deleteConversation(userId, conversationId);
+
+        return ResponseEntity.noContent().build();
     }
 }
+
