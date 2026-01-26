@@ -25,7 +25,7 @@ public class Course {
     private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY)
+            orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Section> sections = new ArrayList<>();
 }

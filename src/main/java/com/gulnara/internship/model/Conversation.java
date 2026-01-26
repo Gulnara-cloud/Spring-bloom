@@ -29,6 +29,7 @@ public class Conversation {
     @OneToMany(mappedBy = "conversation",
             cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @Builder.Default
     private List<Message> messages = new ArrayList<>();
 
     private LocalDateTime createdAt;
