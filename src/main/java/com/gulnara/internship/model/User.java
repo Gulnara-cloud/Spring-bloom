@@ -46,4 +46,12 @@ public class User {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();
     }
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_courses",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    private Set<Course> enrolledCourses = new HashSet<>();
 }

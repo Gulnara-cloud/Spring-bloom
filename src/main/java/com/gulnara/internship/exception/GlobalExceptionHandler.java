@@ -41,4 +41,8 @@ public class GlobalExceptionHandler {
         errorResponse.put("error", "An unexpected error occurred: " + ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 }
