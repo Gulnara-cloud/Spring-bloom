@@ -4,7 +4,7 @@ import com.gulnara.internship.dto.UserLoginDto;
 import com.gulnara.internship.dto.UserRegistrationDto;
 import com.gulnara.internship.model.User;
 import com.gulnara.internship.service.JwtService;
-import com.gulnara.internship.service.UserService;
+import com.gulnara.internship.service.api.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

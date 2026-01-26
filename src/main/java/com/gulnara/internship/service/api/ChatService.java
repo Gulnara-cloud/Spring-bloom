@@ -1,4 +1,4 @@
-package com.gulnara.internship.service;
+package com.gulnara.internship.service.api;
 
 import com.gulnara.internship.dto.ChatRequestDto;
 import com.gulnara.internship.dto.ChatResponseDto;

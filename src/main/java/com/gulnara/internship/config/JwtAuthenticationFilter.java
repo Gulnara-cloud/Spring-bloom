@@ -1,7 +1,7 @@
 package com.gulnara.internship.config;
 
 import com.gulnara.internship.service.JwtService;
-import com.gulnara.internship.service.CustomUserDetailsService;
+import com.gulnara.internship.service.impl.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,9 +1,10 @@
-package com.gulnara.internship.service;
+package com.gulnara.internship.service.impl;
 
 import com.gulnara.internship.dto.UserLoginDto;
 import com.gulnara.internship.dto.UserRegistrationDto;
 import com.gulnara.internship.model.User;
 import com.gulnara.internship.repository.UserRepository;
+import com.gulnara.internship.service.api.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

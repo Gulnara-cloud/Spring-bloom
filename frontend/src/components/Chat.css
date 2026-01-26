@@ -15,7 +15,7 @@ body {
 
 .messages-container {
     width: 550px;
-    max-height: calc(90vh - 250px); /* было height */
+    max-height: calc(90vh - 280px); /* было height */
     overflow-y: auto;
     padding: 50px;
     background: #ffffff;

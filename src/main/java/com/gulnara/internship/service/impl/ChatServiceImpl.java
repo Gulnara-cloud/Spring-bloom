@@ -1,7 +1,7 @@
-package com.gulnara.internship.service;
+package com.gulnara.internship.service.impl;
 
 import com.gulnara.internship.dto.*;
-import com.gulnara.internship.memory.MemoryService;
+import com.gulnara.internship.service.api.MemoryService;
 import com.gulnara.internship.model.Conversation;
 import com.gulnara.internship.model.Message;
 import com.gulnara.internship.model.MessageRole;
@@ -9,6 +9,8 @@ import com.gulnara.internship.model.User;
 import com.gulnara.internship.repository.ConversationRepository;
 import com.gulnara.internship.repository.MessageRepository;
 import com.gulnara.internship.repository.UserRepository;
+import com.gulnara.internship.service.OpenAiClientService;
+import com.gulnara.internship.service.api.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

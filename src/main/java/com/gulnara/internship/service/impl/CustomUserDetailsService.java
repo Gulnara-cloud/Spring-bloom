@@ -1,4 +1,4 @@
-package com.gulnara.internship.service;
+package com.gulnara.internship.service.impl;
 
 import com.gulnara.internship.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -4,6 +4,7 @@ import com.gulnara.internship.dto.UserLoginDto;
 import com.gulnara.internship.dto.UserRegistrationDto;
 import com.gulnara.internship.model.User;
 import com.gulnara.internship.repository.UserRepository;
+import com.gulnara.internship.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

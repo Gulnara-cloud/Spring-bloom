@@ -9,15 +9,17 @@ export default function ChatSidebar({
 }) {
   return (
     <div className="sidebar-container">
-      <h3 className="sidebar-title">Conversations</h3>
 
-      <button
-        type="button"
-        className="sidebar-new-btn"
-        onClick={onNewConversation}
-      >
-        + New chat
-      </button>
+        <div className="sidebar-header">
+
+            <button
+                type="button"
+                className="sidebar-new-btn"
+                onClick={onNewConversation}
+            >
+                + New chat
+            </button>
+        </div>
 
       {conversations.length === 0 ? (
         <p className="sidebar-empty">No conversations yet</p>
