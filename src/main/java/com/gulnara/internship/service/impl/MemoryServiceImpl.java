@@ -1,5 +1,9 @@
-package com.gulnara.internship.memory;
+package com.gulnara.internship.service.impl;
 
+import com.gulnara.internship.model.memory.MemoryFact;
+import com.gulnara.internship.model.memory.UserMemory;
+import com.gulnara.internship.repository.UserMemoryRepository;
+import com.gulnara.internship.service.api.MemoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

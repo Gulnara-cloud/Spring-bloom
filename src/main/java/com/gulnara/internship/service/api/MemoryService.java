@@ -1,4 +1,4 @@
-package com.gulnara.internship.memory;
+package com.gulnara.internship.service.api;
 
 import java.util.UUID;
 

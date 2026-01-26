@@ -1,7 +1,8 @@
-package com.gulnara.internship.memory;
+package com.gulnara.internship.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gulnara.internship.model.memory.MemoryFact;
 import com.gulnara.internship.service.OpenAiClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

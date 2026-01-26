@@ -1,4 +1,4 @@
-package com.gulnara.internship.memory;
+package com.gulnara.internship.model.memory;
 
 import jakarta.persistence.*;
 import lombok.*;

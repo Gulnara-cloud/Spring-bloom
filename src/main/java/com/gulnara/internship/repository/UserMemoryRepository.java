@@ -1,5 +1,6 @@
-package com.gulnara.internship.memory;
+package com.gulnara.internship.repository;
 
+import com.gulnara.internship.model.memory.UserMemory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
