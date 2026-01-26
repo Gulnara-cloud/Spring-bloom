@@ -22,6 +22,7 @@ public class Course {
     private String description;
 
     @ManyToMany(mappedBy = "enrolledCourses")
+    @Builder.Default
     private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL,
